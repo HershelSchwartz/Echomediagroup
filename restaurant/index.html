@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ember &amp; Salt — wood-fired set menu, new every Tuesday</title>
+  <meta name="description" content="Ember & Salt is a 32-seat neighbourhood restaurant cooking a six-course set menu over an oak fire. The menu changes every Tuesday.">
+  <meta name="theme-color" content="#0f1f10">
+  <link rel="preload" href="fonts/besley-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/libre-franklin-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- One drawn flame, reused at every size -->
+    <symbol id="flame" viewBox="0 0 100 140">
+      <path d="M50 0C58 26 84 40 84 80c0 33-17 56-34 60C30 136 16 114 16 86c0-22 12-32 18-44 4 14 10 20 16 22C46 44 40 22 50 0z"/>
+      <path class="flame-core" d="M50 62c6 14 20 22 20 44 0 18-9 30-20 32-12-2-20-14-20-30 0-14 8-20 12-28 2 8 6 12 8 12-2-10-3-20 0-30z"/>
+    </symbol>
+    <symbol id="logs" viewBox="0 0 160 40">
+      <rect x="0" y="4" width="160" height="16" rx="8"/>
+      <rect x="14" y="22" width="132" height="16" rx="8"/>
+    </symbol>
+  </defs>
+</svg>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<main id="main">
+
+  <!-- Hero: this week's menu card -->
+  <section class="hero" id="top">
+    <header class="top">
+      <a class="mark" href="#top" aria-label="Ember and Salt, back to top">E&amp;S</a>
+      <nav class="top-links" aria-label="Main">
+        <a href="#menu">This week</a>
+        <a href="#drinks">Drinks</a>
+        <a href="#fire">The fire</a>
+        <a href="#questions">Questions</a>
+      </nav>
+      <a class="btn" href="#book">Book a table</a>
+    </header>
+
+    <article class="card" id="menu" aria-labelledby="name">
+      <span class="corner corner--tl" aria-hidden="true"></span><span class="corner corner--tr" aria-hidden="true"></span>
+      <span class="corner corner--bl" aria-hidden="true"></span><span class="corner corner--br" aria-hidden="true"></span>
+
+      <h1 class="name" id="name"><span>Ember &amp;</span> <span>Salt</span></h1>
+      <p class="card-details">
+        <span>A six-course menu cooked over oak</span>
+        <span class="diamond" aria-hidden="true"></span>
+        <span>Wednesday to Sunday, 6 pm and 8.30 pm</span>
+        <span class="diamond" aria-hidden="true"></span>
+        <span>14 Harrow Lane</span>
+      </p>
+
+      <h2 class="card-week">This week, 14 to 19 October</h2>
+      <ul class="courses">
+        <li><strong>Flatbread from the fire</strong> cultured butter, smoked salt</li>
+        <li><strong>Beetroot baked in the ash</strong> horseradish, dill</li>
+        <li><strong>Grilled leeks</strong> hazelnut, brown butter</li>
+        <li><strong>Mackerel over oak</strong> pickled cucumber, sorrel</li>
+        <li><strong>Lamb shoulder</strong> ember-roasted onions, salsa verde</li>
+        <li><strong>Burnt honey custard</strong> poached pear</li>
+      </ul>
+      <p class="card-price">£58 a head</p>
+      <p class="card-note">A vegetarian menu is cooked alongside every night: tell us when you book.</p>
+      <a class="btn btn--ink" href="#book">Book for this week</a>
+    </article>
+  </section>
+
+  <!-- Intro: what kind of place this is, in four numbers -->
+  <section class="intro" aria-labelledby="intro-h">
+    <div class="intro-row">
+      <h2 id="intro-h" data-reveal>Cooked over oak</h2>
+      <p class="intro-note" data-reveal>One fire, one menu, thirty-two seats. We light the oak at eleven and cook everything on it, from the bread to the custard.</p>
+    </div>
+    <dl class="facts" data-reveal="list">
+      <div><dt>£58</dt><dd>for six courses</dd></div>
+      <div><dt>32</dt><dd>seats, two sittings</dd></div>
+      <div><dt>6 pm</dt><dd>first sitting, then 8.30</dd></div>
+      <div><dt>Tuesday</dt><dd>the menu changes</dd></div>
+    </dl>
+  </section>
+
+  <!-- Drinks: a tall printed sheet -->
+  <section class="drinks" id="drinks" aria-labelledby="drinks-h">
+    <div class="sheet">
+      <h2 class="giant" id="drinks-h">Drinks</h2>
+      <div class="bars" data-reveal="list">
+        <details class="bar" open>
+          <summary>Wine by the glass</summary>
+          <ul class="items">
+            <li><span>Picpoul de Pinet</span><span>£8</span></li>
+            <li><span>Grüner Veltliner</span><span>£9</span></li>
+            <li><span>Gamay, Beaujolais</span><span>£9</span></li>
+            <li><span>Côtes du Rhône</span><span>£10</span></li>
+            <li><span>Skin-contact white, Georgia</span><span>£11</span></li>
+          </ul>
+        </details>
+        <details class="bar">
+          <summary>Bottles</summary>
+          <ul class="items">
+            <li><span>Muscadet sur lie</span><span>£34</span></li>
+            <li><span>Albariño, Rías Baixas</span><span>£39</span></li>
+            <li><span>Pinot noir, Loire</span><span>£42</span></li>
+            <li><span>Syrah, northern Rhône</span><span>£55</span></li>
+          </ul>
+        </details>
+        <details class="bar">
+          <summary>Beer and cider</summary>
+          <ul class="items">
+            <li><span>Pale ale, from the brewery up the road</span><span>£6</span></li>
+            <li><span>Dry cider</span><span>£6</span></li>
+            <li><span>Lager</span><span>£5.50</span></li>
+          </ul>
+        </details>
+        <details class="bar">
+          <summary>Without alcohol</summary>
+          <ul class="items">
+            <li><span>Smoked apple soda, made here</span><span>£4.50</span></li>
+            <li><span>Rhubarb shrub</span><span>£4.50</span></li>
+            <li><span>Sparkling tea</span><span>£6</span></li>
+            <li><span>Alcohol-free IPA</span><span>£5</span></li>
+          </ul>
+        </details>
+        <details class="bar">
+          <summary>Add to the menu</summary>
+          <ul class="items">
+            <li><span>Oysters roasted over the fire, each</span><span>£3.50</span></li>
+            <li><span>More bread and butter</span><span>£4</span></li>
+            <li><span>Three cheeses, oatcakes</span><span>£9</span></li>
+          </ul>
+        </details>
+        <details class="bar">
+          <summary>Coffee and tea</summary>
+          <ul class="items">
+            <li><span>Espresso</span><span>£3</span></li>
+            <li><span>Filter coffee</span><span>£3.50</span></li>
+            <li><span>Fresh mint tea</span><span>£3</span></li>
+          </ul>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- The fire, through one day -->
+  <section class="fire" id="fire" aria-labelledby="fire-h">
+    <h2 id="fire-h" data-reveal>The fire, all day</h2>
+    <ol class="tiles" data-reveal="list">
+      <li class="tile" style="--heat:.34"><svg class="draw" viewBox="0 0 200 200" aria-hidden="true"><use href="#flame" class="flame" x="70" y="96" width="60" height="84"/><use href="#logs" class="logs" x="40" y="168" width="120" height="30"/></svg>
+        <div class="strip"><p class="vals"><span>11:00</span><span>Kindling</span><span>120°</span></p><p>We lay and light the fire.</p></div></li>
+      <li class="tile" style="--heat:.55"><svg class="draw" viewBox="0 0 200 200" aria-hidden="true"><use href="#flame" class="flame" x="58" y="68" width="84" height="112"/><use href="#logs" class="logs" x="40" y="168" width="120" height="30"/></svg>
+        <div class="strip"><p class="vals"><span>12:30</span><span>Oak</span><span>260°</span></p><p>Bread dough proves beside it.</p></div></li>
+      <li class="tile" style="--heat:.8"><svg class="draw" viewBox="0 0 200 200" aria-hidden="true"><use href="#flame" class="flame" x="45" y="34" width="110" height="146"/><use href="#logs" class="logs" x="40" y="168" width="120" height="30"/></svg>
+        <div class="strip"><p class="vals"><span>14:00</span><span>Oak</span><span>380°</span></p><p>Bread bakes, stock goes on.</p></div></li>
+      <li class="tile" style="--heat:.6"><svg class="draw" viewBox="0 0 200 200" aria-hidden="true"><use href="#flame" class="flame" x="55" y="60" width="90" height="120"/><use href="#logs" class="logs" x="40" y="168" width="120" height="30"/></svg>
+        <div class="strip"><p class="vals"><span>15:30</span><span>Birch</span><span>320°</span></p><p>Beetroot buried in the ash.</p></div></li>
+      <li class="tile" style="--heat:.9"><svg class="draw" viewBox="0 0 200 200" aria-hidden="true"><use href="#flame" class="flame" x="40" y="22" width="120" height="158"/><use href="#logs" class="logs" x="40" y="168" width="120" height="30"/></svg>
+        <div class="strip"><p class="vals"><span>17:00</span><span>Oak</span><span>420°</span></p><p>The grill heats for service.</p></div></li>
+      <li class="tile" style="--heat:1"><svg class="draw" viewBox="0 0 200 200" aria-hidden="true"><use href="#flame" class="flame" x="36" y="10" width="128" height="170"/><use href="#logs" class="logs" x="40" y="168" width="120" height="30"/></svg>
+        <div class="strip"><p class="vals"><span>18:00</span><span>Oak</span><span>450°</span></p><p>First sitting sits down.</p></div></li>
+      <li class="tile" style="--heat:.85"><svg class="draw" viewBox="0 0 200 200" aria-hidden="true"><use href="#flame" class="flame" x="44" y="30" width="112" height="150"/><use href="#logs" class="logs" x="40" y="168" width="120" height="30"/></svg>
+        <div class="strip"><p class="vals"><span>20:30</span><span>Oak</span><span>400°</span></p><p>Second sitting, lamb on.</p></div></li>
+      <li class="tile" style="--heat:.25"><svg class="draw" viewBox="0 0 200 200" aria-hidden="true"><use href="#flame" class="flame" x="80" y="124" width="40" height="56"/><use href="#logs" class="logs" x="40" y="168" width="120" height="30"/></svg>
+        <div class="strip"><p class="vals"><span>23:00</span><span>Embers</span><span>150°</span></p><p>Tomorrow’s onions roast overnight.</p></div></li>
+    </ol>
+  </section>
+
+  <!-- Letter from the kitchen -->
+  <section class="letter" aria-label="A letter from the kitchen">
+    <div class="letter-sheet" data-reveal>
+      <p>We opened Ember &amp; Salt because we wanted to cook the way you cook for friends: one menu, made that day, for a table who trust you.</p>
+      <p>There is no gas in our kitchen. Everything is cooked over oak, or in the embers it leaves behind, which means the menu follows the fire as much as the season.</p>
+      <p>We write a new menu every Tuesday, after the farm deliveries arrive, and print it that afternoon. If something runs out, we cook something else and tell you why.</p>
+      <p>Thirty-two seats is as many as one fire can feed well. Book ahead if you can. If you can’t, come and ask at the door: there is often a seat at the counter.</p>
+      <p class="sign">Sam Hollis</p>
+      <p class="role">Chef and owner</p>
+    </div>
+    <a class="letter-stub" href="mailto:table@emberandsalt.co.uk">table@emberandsalt.co.uk</a>
+  </section>
+
+  <!-- Questions, filed like index cards -->
+  <section class="questions" id="questions" aria-labelledby="q-h">
+    <h2 id="q-h" data-reveal>Before you come</h2>
+    <div class="drawer">
+      <details class="qcard" name="faq" open>
+        <summary><span class="qtab">Allergies</span><span class="qline">Can you cook around an allergy?</span></summary>
+        <div class="qa"><p>Yes, if you tell us when you book. The menu is written on Tuesday, so we can plan around most allergies with a day’s notice. Our kitchen handles nuts, gluten and dairy every day.</p></div>
+      </details>
+      <details class="qcard" name="faq">
+        <summary><span class="qtab">Vegetarian</span><span class="qline">Is there a menu without meat or fish?</span></summary>
+        <div class="qa"><p>Every night. It is six courses, cooked over the same fire, at the same price. Vegan is possible with notice.</p></div>
+      </details>
+      <details class="qcard" name="faq">
+        <summary><span class="qtab">Children</span><span class="qline">Can we bring children?</span></summary>
+        <div class="qa"><p>Children are welcome at the 6 pm sitting. We will cook a smaller plate of what they like from the week’s ingredients, at half price.</p></div>
+      </details>
+      <details class="qcard" name="faq">
+        <summary><span class="qtab">Groups</span><span class="qline">How many can sit together?</span></summary>
+        <div class="qa"><p>Up to eight at one table. For more, book the whole room: all thirty-two seats, Wednesday or Thursday, by email.</p></div>
+      </details>
+      <details class="qcard" name="faq">
+        <summary><span class="qtab">Walk-ins</span><span class="qline">Can we come without booking?</span></summary>
+        <div class="qa"><p>Six counter seats are kept for walk-ins each sitting. Arrive close to 6 pm or 8.30 pm and ask.</p></div>
+      </details>
+      <details class="qcard" name="faq">
+        <summary><span class="qtab">Cancelling</span><span class="qline">What if our plans change?</span></summary>
+        <div class="qa"><p>Let us know 24 hours before and there is nothing to pay. We buy for the number booked, so later than that we charge £20 a head.</p></div>
+      </details>
+    </div>
+  </section>
+
+  <!-- Booking: a coupon to fill in and send -->
+  <section class="book" id="book" aria-labelledby="book-h">
+    <form class="coupon" action="mailto:table@emberandsalt.co.uk" method="post" enctype="text/plain" data-book>
+      <div class="coupon-left">
+        <h2 id="book-h">Book a table</h2>
+        <p class="coupon-total" aria-live="polite" data-total>2 guests, £116 for the set menu. Nothing to pay until the night.</p>
+      </div>
+      <div class="coupon-right">
+        <label class="visually-hidden" for="b-name">Your name</label>
+        <input id="b-name" name="name" type="text" placeholder="Your name" autocomplete="name" required>
+        <div class="pair">
+          <label class="visually-hidden" for="b-night">Night</label>
+          <select id="b-night" name="night">
+            <option>Wednesday 15 October</option>
+            <option>Thursday 16 October</option>
+            <option selected>Friday 17 October</option>
+            <option>Saturday 18 October</option>
+            <option>Sunday 19 October</option>
+          </select>
+          <label class="visually-hidden" for="b-sitting">Sitting</label>
+          <select id="b-sitting" name="sitting">
+            <option>6 pm</option>
+            <option>8.30 pm</option>
+          </select>
+        </div>
+        <label class="visually-hidden" for="b-guests">Guests</label>
+        <select id="b-guests" name="guests">
+          <option value="1">1 guest</option>
+          <option value="2" selected>2 guests</option>
+          <option value="3">3 guests</option>
+          <option value="4">4 guests</option>
+          <option value="5">5 guests</option>
+          <option value="6">6 guests</option>
+          <option value="7">7 guests</option>
+          <option value="8">8 guests</option>
+        </select>
+        <label class="visually-hidden" for="b-notes">Allergies or notes</label>
+        <input id="b-notes" name="notes" type="text" placeholder="Allergies, vegetarian, a birthday…">
+        <button class="submit" type="submit">Send the booking</button>
+      </div>
+    </form>
+  </section>
+
+</main>
+
+<!-- The back of the card, uncovered as the page lifts away -->
+<footer class="back">
+  <div class="postcard">
+    <svg class="scallops" viewBox="0 0 1200 50" preserveAspectRatio="none" aria-hidden="true"><path d="M0 50V25a50 25 0 0 1 100 0a50 25 0 0 1 100 0a50 25 0 0 1 100 0a50 25 0 0 1 100 0a50 25 0 0 1 100 0a50 25 0 0 1 100 0a50 25 0 0 1 100 0a50 25 0 0 1 100 0a50 25 0 0 1 100 0a50 25 0 0 1 100 0a50 25 0 0 1 100 0a50 25 0 0 1 100 0V50z"/></svg>
+    <div class="post-left">
+      <p class="post-sign">See you by the fire.</p>
+      <p>Wednesday to Sunday, two sittings a night at 6 pm and 8.30 pm. Closed Monday and Tuesday while we write the menu.</p>
+    </div>
+    <div class="post-right">
+      <svg class="stamp" viewBox="0 0 200 200" aria-hidden="true"><use href="#flame" class="flame" x="45" y="34" width="110" height="146"/><use href="#logs" class="logs" x="40" y="168" width="120" height="30"/></svg>
+      <ul class="address">
+        <li><a href="mailto:table@emberandsalt.co.uk">table@emberandsalt.co.uk</a></li>
+        <li><a href="tel:+442000000000">020 0000 0000</a></li>
+        <li><a href="https://www.openstreetmap.org/search?query=14%20Harrow%20Lane">14 Harrow Lane</a></li>
+        <li><a href="#top">Back to the menu</a></li>
+      </ul>
+    </div>
+    <p class="imprint">© 2026 Ember &amp; Salt. Menu printed every Tuesday.</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
