@@ -9,6 +9,24 @@ There are two native apps, each with an Android project and an iOS project. They
 
 Change the app IDs in `../scripts/build-mobile.js` before your first store upload. The stores don't let you change them afterwards.
 
+## Get the APKs (Android, no tools needed)
+
+GitHub builds both Android apps automatically on every push that changes `ride-app/`.
+
+1. Open the repository on GitHub and go to **Actions**, then **Android APKs**.
+2. Open the latest run with a green check mark.
+3. Under **Artifacts**, download `EchoRide-rider-apk` and/or `EchoRide-driver-apk`. Each is a zip containing the `.apk`.
+4. Copy the `.apk` to your Android phone and open it. Allow "Install unknown apps" if asked.
+
+On first launch the app asks for a **Server address**. Enter where your EchoRide server is running:
+
+- **Testing at home:** run `npm start` in `ride-app` on your computer, then enter `http://<your-computer's-IP>:3000`. Your phone must be on the same Wi-Fi.
+- **Hosted server:** enter its `https://` address.
+
+To build APKs with a server address built in, open **Actions → Android APKs → Run workflow** and fill in `server_url`. Or set the repository variable `ECHORIDE_SERVER_URL`.
+
+These are debug builds for testing. Store releases need a signed build, described below.
+
 ## What you need
 
 - **Android:** [Android Studio](https://developer.android.com/studio). It installs the Android SDK on first launch.
@@ -36,6 +54,8 @@ Change the app IDs in `../scripts/build-mobile.js` before your first store uploa
 5. Press **Run** in Android Studio or Xcode with your phone plugged in.
 
 Install the rider app on one phone and the driver app on another (or use the web driver page) to run a full trip.
+
+Leave out `SERVER_URL` to have the app ask for the address on its sign-up screen instead.
 
 Plain `http://` only works for local testing. The build script switches on the settings it needs and warns you.
 

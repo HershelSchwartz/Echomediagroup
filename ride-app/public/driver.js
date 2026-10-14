@@ -1,5 +1,5 @@
 import {
-  $, api, connectSocket, createMap, currentPosition, DEFAULT_CENTER, fmtLoc, loadSession, money, placeMarker, saveSession,
+  $, api, applyServerField, connectSocket, createMap, currentPosition, DEFAULT_CENTER, fmtLoc, loadSession, money, placeMarker, saveSession,
 } from './common.js';
 
 // What the driver does next at each stage of a trip.
@@ -37,6 +37,7 @@ function send(event, arg) {
 $('signup').addEventListener('submit', async (e) => {
   e.preventDefault();
   try {
+    applyServerField();
     state.session = await api('/api/drivers', { body: { name: $('name').value, vehicle: $('vehicle').value } });
     saveSession('driver', state.session);
     connect();

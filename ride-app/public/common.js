@@ -2,10 +2,46 @@
 export const DEFAULT_CENTER = { lat: 40.7128, lng: -74.006 };
 
 const CONFIG = window.ECHORIDE_CONFIG ?? {};
-const SERVER = (CONFIG.serverUrl ?? '').replace(/\/$/, '');
+const SERVER_KEY = 'echoride:server';
+const trimUrl = (url) => (url ?? '').trim().replace(/\/$/, '');
 
-// Inside a phone app there is no "other app" page to link to.
-if (CONFIG.app) document.querySelectorAll('.switch-app').forEach((a) => a.remove());
+function storedServer() {
+  try {
+    return localStorage.getItem(SERVER_KEY) ?? '';
+  } catch {
+    return '';
+  }
+}
+
+// Phone apps can be pointed at a server from the sign-up screen; the web app
+// always talks to the server that served it.
+let SERVER = trimUrl((CONFIG.app && storedServer()) || CONFIG.serverUrl);
+
+if (CONFIG.app) {
+  // Inside a phone app there is no "other app" page to link to.
+  document.querySelectorAll('.switch-app').forEach((a) => a.remove());
+  const field = document.getElementById('server');
+  if (field) {
+    field.value = SERVER;
+    field.closest('.server-field').classList.remove('hidden');
+  }
+}
+
+/** Saves the server address typed on the sign-up screen; throws if it is malformed. */
+export function applyServerField() {
+  const field = document.getElementById('server');
+  if (!CONFIG.app || !field) return;
+  const url = trimUrl(field.value);
+  if (!/^https?:\/\/[^/\s]+$/.test(url)) {
+    throw new Error('Enter the server address, e.g. http://192.168.1.20:3000');
+  }
+  SERVER = url;
+  try {
+    localStorage.setItem(SERVER_KEY, url);
+  } catch {
+    // Not persisted; the address is still used for this session.
+  }
+}
 
 export const connectSocket = (auth) => io(SERVER || undefined, { auth });
 
@@ -29,11 +65,16 @@ export function saveSession(role, session) {
 export async function api(path, { body, session, method } = {}) {
   const headers = { 'content-type': 'application/json' };
   if (session) Object.assign(headers, { 'x-user-id': session.id, 'x-token': session.token });
-  const res = await fetch(SERVER + path, {
-    method: method ?? (body ? 'POST' : 'GET'),
-    headers,
-    body: body && JSON.stringify(body),
-  });
+  let res;
+  try {
+    res = await fetch(SERVER + path, {
+      method: method ?? (body ? 'POST' : 'GET'),
+      headers,
+      body: body && JSON.stringify(body),
+    });
+  } catch {
+    throw new Error(`Can't reach the server${SERVER ? ` at ${SERVER}` : ''}. Check the address and your connection.`);
+  }
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw Object.assign(new Error(data.message || 'Request failed'), { code: data.error });
   return data;

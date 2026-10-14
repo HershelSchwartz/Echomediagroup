@@ -14,6 +14,10 @@
 
     <form id="signup" class="hidden">
       <h2>Get a ride</h2>
+      <div class="server-field hidden">
+        <label for="server">Server address</label>
+        <input id="server" type="url" inputmode="url" autocapitalize="off" placeholder="http://192.168.1.20:3000">
+      </div>
       <label for="name">Your name</label>
       <input id="name" autocomplete="given-name" maxlength="40" required>
       <button type="submit">Continue</button>

@@ -1,0 +1,71 @@
+name: Android APKs
+
+on:
+  push:
+    paths:
+      - 'ride-app/**'
+      - '.github/workflows/android-apk.yml'
+  workflow_dispatch:
+    inputs:
+      server_url:
+        description: 'Server the apps connect to, e.g. https://api.example.com (leave empty to type it in the app)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  apk:
+    name: ${{ matrix.app }} APK
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [rider, driver]
+    defaults:
+      run:
+        working-directory: ride-app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            ride-app/package-lock.json
+            ride-app/mobile/${{ matrix.app }}/package-lock.json
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Install and test server
+        run: |
+          npm ci
+          npm test
+
+      - name: Package web app
+        env:
+          SERVER_URL: ${{ inputs.server_url || vars.ECHORIDE_SERVER_URL }}
+        run: node scripts/build-mobile.js ${{ matrix.app }}
+
+      - name: Sync native project
+        working-directory: ride-app/mobile/${{ matrix.app }}
+        run: |
+          npm ci
+          npx cap sync android
+
+      - name: Build debug APK
+        working-directory: ride-app/mobile/${{ matrix.app }}/android
+        run: |
+          ./gradlew assembleDebug --no-daemon --stacktrace
+          cp app/build/outputs/apk/debug/app-debug.apk "$GITHUB_WORKSPACE/EchoRide-${{ matrix.app }}.apk"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: EchoRide-${{ matrix.app }}-apk
+          path: EchoRide-${{ matrix.app }}.apk
+          if-no-files-found: error

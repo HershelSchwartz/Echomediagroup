@@ -1,5 +1,5 @@
 import {
-  $, api, connectSocket, createMap, currentPosition, DEFAULT_CENTER, fmtLoc, loadSession, money, placeMarker, saveSession,
+  $, api, applyServerField, connectSocket, createMap, currentPosition, DEFAULT_CENTER, fmtLoc, loadSession, money, placeMarker, saveSession,
 } from './common.js';
 
 const STATUS_COPY = {
@@ -26,6 +26,7 @@ const showError = (err) => { $('error').textContent = err ? err.message ?? Strin
 $('signup').addEventListener('submit', async (e) => {
   e.preventDefault();
   try {
+    applyServerField();
     state.session = await api('/api/riders', { body: { name: $('name').value } });
     saveSession('rider', state.session);
     start();
