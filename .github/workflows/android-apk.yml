@@ -69,3 +69,40 @@ jobs:
           name: EchoRide-${{ matrix.app }}-apk
           path: EchoRide-${{ matrix.app }}.apk
           if-no-files-found: error
+
+  release:
+    name: Publish APKs to a release
+    needs: apk
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: echoride-apk-release
+      cancel-in-progress: false
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: echoride-apk-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: apks
+          merge-multiple: true
+
+      - name: Replace the "latest APKs" release
+        run: |
+          cat > notes.md <<NOTES
+          Test builds of the EchoRide phone apps from \`${GITHUB_REF_NAME}\` (commit ${GITHUB_SHA::7}).
+
+          - **EchoRide-rider.apk**: the app for riders
+          - **EchoRide-driver.apk**: the app for drivers
+
+          **Install:** download the .apk on your Android phone and tap it. If asked, allow "Install unknown apps" for your browser.
+
+          **First launch:** enter your server address, e.g. \`http://192.168.1.20:3000\` for a computer running \`npm start\` on the same Wi-Fi.
+
+          These are debug builds for testing, not for the Play Store.
+          NOTES
+          gh release delete "$TAG" --cleanup-tag --yes -R "$GITHUB_REPOSITORY" || true
+          gh release create "$TAG" apks/*.apk -R "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" --prerelease \
+            --title "EchoRide APKs (latest test build)" --notes-file notes.md

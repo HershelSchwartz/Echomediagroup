@@ -11,12 +11,12 @@ Change the app IDs in `../scripts/build-mobile.js` before your first store uploa
 
 ## Get the APKs (Android, no tools needed)
 
-GitHub builds both Android apps automatically on every push that changes `ride-app/`.
+GitHub builds both Android apps automatically on every push that changes `ride-app/`, then publishes them to the **EchoRide APKs (latest test build)** release. Open these links on your Android phone to download:
 
-1. Open the repository on GitHub and go to **Actions**, then **Android APKs**.
-2. Open the latest run with a green check mark.
-3. Under **Artifacts**, download `EchoRide-rider-apk` and/or `EchoRide-driver-apk`. Each is a zip containing the `.apk`.
-4. Copy the `.apk` to your Android phone and open it. Allow "Install unknown apps" if asked.
+- Rider app: https://github.com/HershelSchwartz/Echomediagroup/releases/download/echoride-apk-latest/EchoRide-rider.apk
+- Driver app: https://github.com/HershelSchwartz/Echomediagroup/releases/download/echoride-apk-latest/EchoRide-driver.apk
+
+Tap the downloaded `.apk` to install it. Allow "Install unknown apps" for your browser if asked. The links always point at the newest build.
 
 On first launch the app asks for a **Server address**. Enter where your EchoRide server is running:
 
