@@ -1,0 +1,552 @@
+<title>My Day</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: a daylight arc up top, then two columns. Left is what to do, right is when and how the day feels. One column on phones. */
+:root {
+  --bg: #EDF0F4;
+  --surface: #FFFFFF;
+  --ink: #18202E;
+  --muted: #5B6779;
+  --line: #D6DCE5;
+  --accent: #C9731F;
+  --accent-soft: #F7E3CC;
+  --on-accent: #1E1205;
+  --sky: #3653A0;
+  --sky-soft: #DDE5F6;
+  --done: #2F7D55;
+  --font-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --radius: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1219; --surface: #171D27; --ink: #E6EAF1; --muted: #98A3B5; --line: #283142;
+    --accent: #F0A04B; --accent-soft: #3A2A18; --on-accent: #1E1205;
+    --sky: #8FA9EA; --sky-soft: #1E2840; --done: #6CC495; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1219; --surface: #171D27; --ink: #E6EAF1; --muted: #98A3B5; --line: #283142;
+  --accent: #F0A04B; --accent-soft: #3A2A18; --on-accent: #1E1205;
+  --sky: #8FA9EA; --sky-soft: #1E2840; --done: #6CC495; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font: 16px/1.5 var(--font-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 48px;
+}
+.wrap { max-width: 1060px; margin: 0 auto; display: grid; gap: 20px; }
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+h1, h2 { font-family: var(--font-display); margin: 0; text-wrap: balance; }
+h2 { font-size: 1.05rem; font-weight: 700; letter-spacing: 0.01em; }
+.label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); font-weight: 700; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+/* Header */
+header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px 20px; }
+.date h1 { font-size: clamp(2.2rem, 6vw, 3.4rem); line-height: 1; font-weight: 700; letter-spacing: -0.02em; }
+.date p { margin: 6px 0 0; color: var(--muted); font-size: 1.05rem; }
+.nav { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.nav button { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; min-height: 36px; }
+.nav button:hover { border-color: var(--muted); }
+.nav button[disabled] { opacity: 0.45; cursor: default; }
+.sync { font-size: 0.8rem; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; margin-left: 6px; }
+.sync::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--done); }
+.sync[data-s="saving"]::before { background: var(--accent); }
+.sync[data-s="error"]::before { background: #D2453B; }
+.sync[data-s="local"]::before { background: var(--muted); }
+
+/* Example banner */
+.banner { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; background: var(--accent-soft); border-radius: var(--radius); padding: 12px 16px; }
+.banner p { margin: 0; flex: 1 1 260px; }
+.banner button { border: 0; border-radius: 999px; padding: 6px 14px; font-weight: 700; }
+.btn-primary { background: var(--accent); color: var(--on-accent); }
+.btn-ghost { background: transparent; border: 1px solid var(--line) !important; }
+
+/* Sky: arc + stats */
+.sky { display: grid; grid-template-columns: minmax(0, 340px) 1fr; gap: 20px 32px; align-items: center; background: var(--surface); border-radius: var(--radius); padding: 20px 24px; border: 1px solid var(--line); }
+.arc svg { width: 100%; height: auto; display: block; overflow: visible; }
+.arc .track { fill: none; stroke: var(--line); stroke-width: 10; stroke-linecap: round; }
+.arc .fill { fill: none; stroke: url(#dayGrad); stroke-width: 10; stroke-linecap: round; transition: stroke-dasharray 0.6s ease; }
+.arc .sun { fill: var(--accent); stroke: var(--surface); stroke-width: 4; }
+.arc .tick { fill: var(--muted); font: 500 10px var(--font-mono); }
+.arc .now { fill: var(--ink); font: 700 26px var(--font-display); }
+.arc .left { fill: var(--muted); font: 400 11px var(--font-body); }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.stat b { display: block; font: 700 1.9rem/1.1 var(--font-display); font-variant-numeric: tabular-nums; }
+.stat b small { font-size: 1rem; color: var(--muted); font-weight: 500; }
+.meter { height: 6px; background: var(--line); border-radius: 99px; margin-top: 8px; overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--done); border-radius: 99px; transition: width 0.4s ease; }
+
+/* Columns */
+.cols { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.col { display: grid; gap: 20px; min-width: 0; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; display: grid; gap: 12px; min-width: 0; }
+.panel-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.panel-head .count { font-size: 0.85rem; color: var(--muted); }
+.link { background: none; border: 0; padding: 0; color: var(--muted); font-size: 0.85rem; text-decoration: underline; text-underline-offset: 3px; }
+.link:hover { color: var(--ink); }
+
+/* Check */
+.check { appearance: none; -webkit-appearance: none; flex: none; width: 22px; height: 22px; border: 2px solid var(--muted); border-radius: 7px; margin: 0; display: grid; place-content: center; cursor: pointer; background: var(--surface); }
+.check::after { content: ""; width: 10px; height: 6px; border: solid var(--surface); border-width: 0 0 2.5px 2.5px; transform: rotate(-45deg) translate(1px, -1px); opacity: 0; }
+.check:checked { background: var(--done); border-color: var(--done); }
+.check:checked::after { opacity: 1; }
+
+/* Priorities */
+.prio { display: grid; gap: 8px; }
+.prio-row { display: flex; align-items: center; gap: 12px; padding: 8px 10px 8px 0; border-bottom: 1px solid var(--line); }
+.prio-row:last-child { border-bottom: 0; }
+.prio-n { font: 700 1.6rem/1 var(--font-display); color: var(--accent); width: 1.4ch; text-align: center; flex: none; }
+.prio-row input[type="text"] { flex: 1; min-width: 0; border: 0; background: transparent; font-size: 1.05rem; padding: 4px 0; }
+.prio-row.is-done input[type="text"] { text-decoration: line-through; color: var(--muted); }
+
+/* Tasks */
+.tasks { list-style: none; margin: 0; padding: 0; display: grid; }
+.task { display: flex; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--line); }
+.task:last-child { border-bottom: 0; }
+.task span { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.task.is-done span { text-decoration: line-through; color: var(--muted); }
+.del { background: none; border: 0; color: var(--muted); width: 30px; height: 30px; border-radius: 8px; flex: none; font-size: 1.15rem; line-height: 1; opacity: 0.55; }
+.del:hover, .del:focus-visible { opacity: 1; background: var(--bg); color: var(--ink); }
+.add { display: flex; gap: 8px; flex-wrap: wrap; }
+.add input { flex: 1 1 140px; min-width: 0; border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; background: var(--bg); }
+.add input[type="time"] { flex: 0 1 120px; }
+.add button { border: 0; border-radius: 10px; padding: 8px 16px; font-weight: 700; background: var(--ink); color: var(--surface); }
+.empty { color: var(--muted); margin: 0; font-size: 0.95rem; }
+
+/* Schedule */
+.sched { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.blk { display: grid; grid-template-columns: 9.6rem minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 9px 10px 9px 12px; border-radius: 10px; background: var(--sky-soft); }
+.blk .t { font-size: 0.8rem; color: var(--sky); white-space: nowrap; }
+.blk .ttl { overflow-wrap: anywhere; }
+.blk.is-past { background: transparent; border: 1px dashed var(--line); }
+.blk.is-past .ttl, .blk.is-past .t { color: var(--muted); }
+.blk.is-now { background: var(--accent-soft); box-shadow: inset 4px 0 0 var(--accent); }
+.blk.is-now .t { color: var(--ink); }
+.pill { display: inline-block; font: 700 0.68rem var(--font-body); letter-spacing: 0.08em; text-transform: uppercase; background: var(--accent); color: var(--on-accent); border-radius: 99px; padding: 1px 8px; margin-left: 8px; vertical-align: 2px; }
+.nowline { display: flex; align-items: center; gap: 10px; color: var(--accent); font-size: 0.8rem; font-weight: 700; }
+.nowline::after { content: ""; flex: 1; height: 2px; background: var(--accent); border-radius: 2px; }
+
+/* Water & mood */
+.glasses { display: flex; flex-wrap: wrap; gap: 8px; }
+.glass { width: 34px; height: 42px; border: 2px solid var(--sky); border-radius: 4px 4px 10px 10px; background: transparent; padding: 0; position: relative; overflow: hidden; }
+.glass::after { content: ""; position: absolute; inset: auto 0 0 0; height: 0; background: var(--sky); transition: height 0.25s ease; }
+.glass.full::after { height: 78%; }
+.moods { display: flex; flex-wrap: wrap; gap: 8px; }
+.mood { border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 6px 14px; }
+.mood[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+textarea { width: 100%; min-height: 120px; resize: vertical; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; background: var(--bg); line-height: 1.55; }
+
+@media (max-width: 820px) {
+  .cols { grid-template-columns: minmax(0, 1fr); }
+  .sky { grid-template-columns: minmax(0, 1fr); }
+  .arc { max-width: 340px; margin: 0 auto; width: 100%; }
+}
+@media (max-width: 420px) {
+  .stats { gap: 10px; }
+  .stat b { font-size: 1.5rem; }
+  .blk { grid-template-columns: minmax(0, 1fr) auto; }
+  .blk { gap: 2px 12px; }
+  .blk .t { grid-column: 1; grid-row: 1; }
+  .blk .ttl { grid-column: 1; grid-row: 2; }
+  .blk .del { grid-column: 2; grid-row: 1 / span 2; }
+  .glasses { gap: 6px; }
+  .glass { width: 30px; height: 38px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="date">
+      <h1 id="dayName">Today</h1>
+      <p id="dayLine"></p>
+    </div>
+    <div class="nav" role="group" aria-label="Choose a day">
+      <button id="prevDay" type="button" aria-label="Previous day">&larr; Prev</button>
+      <button id="todayBtn" type="button">Today</button>
+      <button id="nextDay" type="button" aria-label="Next day">Next &rarr;</button>
+      <span class="sync" id="sync" data-s="local">Saved on this device</span>
+    </div>
+  </header>
+
+  <div class="banner" id="banner" hidden>
+    <p><strong>This is a sample day</strong> so you can see how My Day works. Edit anything to make it yours, or start with a blank page.</p>
+    <button class="btn-primary" id="startFresh" type="button">Start fresh</button>
+    <button class="btn-ghost" id="keepSample" type="button">Keep and edit</button>
+  </div>
+
+  <section class="sky" aria-label="Day overview">
+    <div class="arc" id="arc"></div>
+    <div class="stats">
+      <div class="stat"><span class="label">Priorities</span><b id="stPrio">0<small>/3</small></b><div class="meter"><i id="mPrio" style="width:0"></i></div></div>
+      <div class="stat"><span class="label">Tasks</span><b id="stTasks">0<small>/0</small></b><div class="meter"><i id="mTasks" style="width:0"></i></div></div>
+      <div class="stat"><span class="label">Water</span><b id="stWater">0<small>/8</small></b><div class="meter"><i id="mWater" style="width:0"></i></div></div>
+    </div>
+  </section>
+
+  <div class="cols">
+    <div class="col">
+      <section class="panel" aria-labelledby="hPrio">
+        <div class="panel-head"><h2 id="hPrio">Top 3 priorities</h2><span class="count">If nothing else gets done</span></div>
+        <div class="prio" id="prio"></div>
+      </section>
+
+      <section class="panel" aria-labelledby="hTasks">
+        <div class="panel-head"><h2 id="hTasks">To do</h2><button class="link" id="clearDone" type="button">Clear finished</button></div>
+        <ul class="tasks" id="tasks"></ul>
+        <form class="add" id="taskForm" autocomplete="off">
+          <input id="taskInput" type="text" placeholder="Add a task" aria-label="New task" maxlength="200">
+          <button type="submit">Add</button>
+        </form>
+      </section>
+    </div>
+
+    <div class="col">
+      <section class="panel" aria-labelledby="hSched">
+        <div class="panel-head"><h2 id="hSched">Schedule</h2><span class="count" id="schedCount"></span></div>
+        <ul class="sched" id="sched"></ul>
+        <form class="add" id="blockForm" autocomplete="off">
+          <input id="blockStart" type="time" aria-label="Start time" required>
+          <input id="blockEnd" type="time" aria-label="End time">
+          <input id="blockTitle" type="text" placeholder="What's happening" aria-label="Event" maxlength="120" required>
+          <button type="submit">Add</button>
+        </form>
+      </section>
+
+      <section class="panel" aria-labelledby="hWell">
+        <div class="panel-head"><h2 id="hWell">Water</h2><span class="count" id="waterCount"></span></div>
+        <div class="glasses" id="glasses" role="group" aria-label="Glasses of water"></div>
+        <span class="label" id="hMood">Mood</span>
+        <div class="moods" id="moods" role="group" aria-labelledby="hMood"></div>
+      </section>
+
+      <section class="panel" aria-labelledby="hNote">
+        <div class="panel-head"><h2 id="hNote">Notes</h2><span class="count">Wins, thoughts, tomorrow</span></div>
+        <textarea id="note" aria-labelledby="hNote" placeholder="One good thing about today..."></textarea>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const $ = (s) => document.querySelector(s);
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const newId = () => Math.random().toString(36).slice(2, 10);
+  const pad = (n) => String(n).padStart(2, "0");
+  const keyOf = (d) => d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+  const todayKey = () => keyOf(new Date());
+  const fromKey = (k) => { const [y, m, d] = k.split("-").map(Number); return new Date(y, m - 1, d); };
+  const shiftKey = (k, n) => { const d = fromKey(k); d.setDate(d.getDate() + n); return keyOf(d); };
+  const toMin = (t) => { if (!t) return null; const [h, m] = t.split(":").map(Number); return h * 60 + m; };
+  const fmtTime = (t) => { const m = toMin(t); if (m == null) return ""; const h = Math.floor(m / 60), mm = m % 60; return ((h + 11) % 12 + 1) + ":" + pad(mm) + (h < 12 ? " am" : " pm"); };
+  const DAY_START = 6 * 60, DAY_END = 22 * 60, WATER_GOAL = 8;
+  const MOODS = ["Great", "Good", "Okay", "Tired", "Stressed"];
+
+  const blank = () => ({ priorities: [{ text: "", done: false }, { text: "", done: false }, { text: "", done: false }], tasks: [], blocks: [], water: 0, mood: "", note: "" });
+  const sample = () => ({
+    example: true,
+    priorities: [{ text: "Send the Q4 proposal to the client", done: false }, { text: "30-minute walk", done: true }, { text: "Call Mom back", done: false }],
+    tasks: [
+      { id: newId(), text: "Reply to the venue about Saturday", done: true },
+      { id: newId(), text: "Pick up dry cleaning", done: false },
+      { id: newId(), text: "Order printer ink", done: false },
+      { id: newId(), text: "Book a dentist appointment", done: false }
+    ],
+    blocks: [
+      { id: newId(), start: "08:30", end: "09:00", title: "Plan the day" },
+      { id: newId(), start: "10:00", end: "11:30", title: "Deep work: proposal draft" },
+      { id: newId(), start: "13:00", end: "13:45", title: "Lunch" },
+      { id: newId(), start: "15:00", end: "15:30", title: "Team check-in" },
+      { id: newId(), start: "18:30", end: "19:30", title: "Dinner" }
+    ],
+    water: 3, mood: "Good", note: ""
+  });
+  function normalize(d) {
+    const b = blank();
+    if (!d || typeof d !== "object") return b;
+    const p = Array.isArray(d.priorities) ? d.priorities : [];
+    return {
+      priorities: [0, 1, 2].map((i) => ({ text: String(p[i]?.text ?? ""), done: !!p[i]?.done })),
+      tasks: (Array.isArray(d.tasks) ? d.tasks : []).filter((t) => t && t.text).map((t) => ({ id: String(t.id || newId()), text: String(t.text), done: !!t.done })),
+      blocks: (Array.isArray(d.blocks) ? d.blocks : []).filter((x) => x && x.start && x.title).map((x) => ({ id: String(x.id || newId()), start: String(x.start), end: String(x.end || ""), title: String(x.title) })),
+      water: Math.max(0, Math.min(WATER_GOAL, Number(d.water) || 0)),
+      mood: MOODS.includes(d.mood) ? d.mood : "",
+      note: String(d.note ?? "")
+    };
+  }
+
+  /* ---------- Local cache (always) ---------- */
+  const LS = "myday:";
+  const readLocal = (k) => { try { const v = localStorage.getItem(LS + k); return v ? normalize(JSON.parse(v)) : null; } catch (e) { return null; } };
+  const writeLocal = (k, s) => { try { localStorage.setItem(LS + k, JSON.stringify(s)); } catch (e) {} };
+  const localStarted = () => { try { return localStorage.getItem(LS + "started") === "1"; } catch (e) { return false; } };
+
+  /* ---------- Cloud store (when the viewer provides it) ---------- */
+  const store = { db: null, uid: null, unsub: null };
+  const dayRef = (k) => store.db.collection("data/users/" + store.uid).doc("day-" + k);
+  let started = localStarted();
+  let viewKey = todayKey();
+  let state = readLocal(viewKey) || (started ? blank() : sample());
+  let pending = null, saving = false, timer = null;
+
+  function setSync(s) {
+    const el = $("#sync");
+    const cloud = !!store.db;
+    const text = { saving: "Saving...", error: "Couldn't save. Your changes are kept on this device.", saved: "Saved", local: "Saved on this device" };
+    const k = s || (cloud ? "saved" : "local");
+    el.dataset.s = k; el.textContent = text[k];
+  }
+
+  function markStarted() {
+    if (started) return;
+    started = true;
+    try { localStorage.setItem(LS + "started", "1"); } catch (e) {}
+    if (store.db) store.db.collection("data/users/" + store.uid).doc("meta").set({ started: true }).catch(() => {});
+  }
+
+  function commit(rerender = true) {
+    if (state.example) { delete state.example; markStarted(); }
+    writeLocal(viewKey, state);
+    pending = { key: viewKey, data: JSON.parse(JSON.stringify(state)) };
+    clearTimeout(timer);
+    timer = setTimeout(flush, 700);
+    if (rerender) renderAll(); else { renderStats(); renderBanner(); }
+  }
+
+  async function flush() {
+    clearTimeout(timer);
+    if (!pending) return;
+    if (!store.db) { pending = null; setSync(); return; }
+    if (saving) { timer = setTimeout(flush, 300); return; }
+    const job = pending; pending = null; saving = true; setSync("saving");
+    try { await dayRef(job.key).set({ ...job.data, updated: Date.now() }); setSync(pending ? "saving" : "saved"); }
+    catch (e) { setSync("error"); }
+    saving = false;
+    if (pending) flush();
+  }
+
+  function openDay(k) {
+    if (pending) flush();
+    viewKey = k;
+    if (store.unsub) { store.unsub(); store.unsub = null; }
+    state = readLocal(k) || (k === todayKey() && !started ? sample() : blank());
+    renderAll();
+    if (!store.db) return;
+    store.unsub = dayRef(k).onSnapshot((snap) => {
+      if (k !== viewKey || pending || saving || snap.metadata.hasPendingWrites) return;
+      if (snap.exists) { state = normalize(snap.data()); writeLocal(k, state); renderAll(); }
+    }, () => setSync("error"));
+  }
+
+  async function connect() {
+    try {
+      if (!window.claude || typeof window.claude.use !== "function") return;
+      const [db, user] = await Promise.all([window.claude.use("db"), window.claude.use("user")]);
+      if (!db || !user) return;
+      const id = await user.id();
+      if (!id) return;
+      store.db = db; store.uid = id;
+      setSync();
+      if (!started) {
+        const meta = await db.collection("data/users/" + id).doc("meta").get();
+        if (meta.exists) { started = true; try { localStorage.setItem(LS + "started", "1"); } catch (e) {} }
+      }
+      const edited = pending;
+      openDay(viewKey);
+      if (edited) { pending = edited; flush(); }
+    } catch (e) { return; }
+  }
+
+  /* ---------- Rendering ---------- */
+  function renderHeader() {
+    const d = fromKey(viewKey), t = todayKey();
+    const rel = viewKey === t ? "Today" : viewKey === shiftKey(t, -1) ? "Yesterday" : viewKey === shiftKey(t, 1) ? "Tomorrow" : null;
+    $("#dayName").textContent = rel || d.toLocaleDateString(undefined, { weekday: "long" });
+    const long = d.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+    let greet = "";
+    if (viewKey === t) { const h = new Date().getHours(); greet = (h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening") + " · "; }
+    $("#dayLine").textContent = greet + long;
+    $("#todayBtn").disabled = viewKey === t;
+  }
+
+  function renderBanner() { $("#banner").hidden = !state.example; }
+
+  function dayProgress() {
+    const t = todayKey();
+    if (viewKey < t) return 1;
+    if (viewKey > t) return 0;
+    const n = new Date(), m = n.getHours() * 60 + n.getMinutes();
+    return Math.max(0, Math.min(1, (m - DAY_START) / (DAY_END - DAY_START)));
+  }
+
+  function renderArc() {
+    const p = dayProgress(), t = todayKey();
+    const x = 120 - 100 * Math.cos(Math.PI * p), y = 118 - 100 * Math.sin(Math.PI * p);
+    let big, sub;
+    if (viewKey === t) {
+      const n = new Date(), m = n.getHours() * 60 + n.getMinutes();
+      big = fmtTime(pad(n.getHours()) + ":" + pad(n.getMinutes()));
+      const left = DAY_END - m;
+      sub = m < DAY_START ? "Your day starts at 6 am" : left <= 0 ? "Day's done. Time to rest." : Math.floor(left / 60) + "h " + (left % 60) + "m left in your day";
+    } else if (viewKey < t) { big = "Done"; sub = "A look back at this day"; }
+    else { big = "Ahead"; sub = "Plan it out before it starts"; }
+    $("#arc").innerHTML =
+      '<svg viewBox="0 0 240 150" role="img" aria-label="' + esc(Math.round(p * 100) + "% of the day from 6 am to 10 pm has passed") + '">' +
+      '<defs><linearGradient id="dayGrad" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="var(--sky)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient></defs>' +
+      '<path class="track" d="M20 118 A100 100 0 0 1 220 118"/>' +
+      '<path class="fill" pathLength="100" stroke-dasharray="' + (p * 100).toFixed(2) + ' 100" d="M20 118 A100 100 0 0 1 220 118"/>' +
+      '<circle class="sun" cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="10"/>' +
+      '<text class="tick" x="20" y="142" text-anchor="middle">6 am</text>' +
+      '<text class="tick" x="120" y="10" text-anchor="middle" dy="-2">2 pm</text>' +
+      '<text class="tick" x="220" y="142" text-anchor="middle">10 pm</text>' +
+      '<text class="now" x="120" y="100" text-anchor="middle">' + esc(big) + '</text>' +
+      '<text class="left" x="120" y="120" text-anchor="middle">' + esc(sub) + '</text>' +
+      '</svg>';
+  }
+
+  function renderStats() {
+    const pd = state.priorities.filter((p) => p.text && p.done).length, pt = state.priorities.filter((p) => p.text).length;
+    const td = state.tasks.filter((t) => t.done).length, tt = state.tasks.length;
+    $("#stPrio").innerHTML = pd + "<small>/" + (pt || 3) + "</small>";
+    $("#mPrio").style.width = (pt ? (pd / pt) * 100 : 0) + "%";
+    $("#stTasks").innerHTML = td + "<small>/" + tt + "</small>";
+    $("#mTasks").style.width = (tt ? (td / tt) * 100 : 0) + "%";
+    $("#stWater").innerHTML = state.water + "<small>/" + WATER_GOAL + "</small>";
+    $("#mWater").style.width = (state.water / WATER_GOAL) * 100 + "%";
+  }
+
+  const PRIO_PH = ["The one thing that matters most", "Second most important", "Third, if there's time"];
+  function renderPrio() {
+    $("#prio").innerHTML = state.priorities.map((p, i) =>
+      '<div class="prio-row' + (p.done ? " is-done" : "") + '">' +
+      '<span class="prio-n" aria-hidden="true">' + (i + 1) + '</span>' +
+      '<input class="check" type="checkbox" id="prioDone' + i + '" data-i="' + i + '"' + (p.done ? " checked" : "") + ' aria-label="Priority ' + (i + 1) + ' done">' +
+      '<input type="text" id="prioText' + i + '" data-i="' + i + '" value="' + esc(p.text) + '" placeholder="' + PRIO_PH[i] + '" aria-label="Priority ' + (i + 1) + '" maxlength="140">' +
+      '</div>').join("");
+  }
+
+  function renderTasks() {
+    const list = $("#tasks");
+    if (!state.tasks.length) { list.innerHTML = '<li class="empty">Nothing on the list. Add your first task below.</li>'; }
+    else list.innerHTML = state.tasks.map((t) =>
+      '<li class="task' + (t.done ? " is-done" : "") + '">' +
+      '<input class="check" type="checkbox" id="task-' + esc(t.id) + '" data-id="' + esc(t.id) + '"' + (t.done ? " checked" : "") + '>' +
+      '<label for="task-' + esc(t.id) + '" style="flex:1;min-width:0;cursor:pointer"><span>' + esc(t.text) + '</span></label>' +
+      '<button class="del" type="button" data-del="' + esc(t.id) + '" aria-label="Delete ' + esc(t.text) + '">&times;</button></li>').join("");
+    $("#clearDone").hidden = !state.tasks.some((t) => t.done);
+  }
+
+  function renderSched() {
+    const list = $("#sched"), isToday = viewKey === todayKey();
+    const n = new Date(), now = n.getHours() * 60 + n.getMinutes();
+    const blocks = state.blocks.slice().sort((a, b) => toMin(a.start) - toMin(b.start));
+    $("#schedCount").textContent = blocks.length ? blocks.length + (blocks.length === 1 ? " event" : " events") : "";
+    if (!blocks.length) { list.innerHTML = '<li class="empty">No events yet. Add a time and what\'s happening.</li>'; return; }
+    let html = "", placed = !isToday;
+    for (const b of blocks) {
+      const s = toMin(b.start), e = toMin(b.end) ?? s + 30;
+      if (!placed && s > now) { html += '<li class="nowline">Now · ' + fmtTime(pad(n.getHours()) + ":" + pad(n.getMinutes())) + '</li>'; placed = true; }
+      const cls = !isToday ? (viewKey < todayKey() ? " is-past" : "") : now >= s && now < e ? " is-now" : now >= e ? " is-past" : "";
+      if (cls === " is-now") placed = true;
+      html += '<li class="blk' + cls + '"><span class="t mono">' + fmtTime(b.start) + (b.end ? "–" + fmtTime(b.end) : "") + '</span>' +
+        '<span class="ttl">' + esc(b.title) + (cls === " is-now" ? '<span class="pill">Now</span>' : "") + '</span>' +
+        '<button class="del" type="button" data-delblk="' + esc(b.id) + '" aria-label="Delete ' + esc(b.title) + '">&times;</button></li>';
+    }
+    if (!placed && now < DAY_END + 120) html += '<li class="nowline">Now · ' + fmtTime(pad(n.getHours()) + ":" + pad(n.getMinutes())) + '</li>';
+    list.innerHTML = html;
+  }
+
+  function renderWell() {
+    let g = "";
+    for (let i = 0; i < WATER_GOAL; i++) g += '<button type="button" class="glass' + (i < state.water ? " full" : "") + '" data-g="' + i + '" aria-label="' + (i + 1) + (i ? " glasses" : " glass") + '" aria-pressed="' + (i < state.water) + '"></button>';
+    $("#glasses").innerHTML = g;
+    $("#waterCount").textContent = state.water >= WATER_GOAL ? "Goal reached" : (WATER_GOAL - state.water) + " to go";
+    $("#moods").innerHTML = MOODS.map((m) => '<button type="button" class="mood" data-mood="' + m + '" aria-pressed="' + (state.mood === m) + '">' + m + '</button>').join("");
+  }
+
+  function renderNote() { const el = $("#note"); if (document.activeElement !== el) el.value = state.note; }
+
+  function renderAll() {
+    renderHeader(); renderBanner(); renderArc(); renderStats();
+    if (!$("#prio").contains(document.activeElement) || document.activeElement.type !== "text") renderPrio();
+    renderTasks(); renderSched(); renderWell(); renderNote();
+  }
+
+  /* ---------- Events ---------- */
+  $("#prio").addEventListener("input", (e) => {
+    const i = Number(e.target.dataset.i);
+    if (e.target.type === "text") { state.priorities[i].text = e.target.value; commit(false); }
+  });
+  $("#prio").addEventListener("change", (e) => {
+    const i = Number(e.target.dataset.i);
+    if (e.target.type === "checkbox") { state.priorities[i].done = e.target.checked; e.target.closest(".prio-row").classList.toggle("is-done", e.target.checked); commit(false); }
+  });
+  $("#taskForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const v = $("#taskInput").value.trim(); if (!v) return;
+    state.tasks.push({ id: newId(), text: v, done: false }); $("#taskInput").value = ""; commit();
+  });
+  $("#tasks").addEventListener("change", (e) => {
+    const t = state.tasks.find((x) => x.id === e.target.dataset.id); if (!t) return;
+    t.done = e.target.checked; commit();
+  });
+  $("#tasks").addEventListener("click", (e) => {
+    const id = e.target.closest("[data-del]")?.dataset.del; if (!id) return;
+    state.tasks = state.tasks.filter((t) => t.id !== id); commit();
+  });
+  $("#clearDone").addEventListener("click", () => { state.tasks = state.tasks.filter((t) => !t.done); commit(); });
+  $("#blockForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const start = $("#blockStart").value, end = $("#blockEnd").value, title = $("#blockTitle").value.trim();
+    if (!start || !title) return;
+    state.blocks.push({ id: newId(), start, end: end && toMin(end) > toMin(start) ? end : "", title });
+    $("#blockTitle").value = ""; $("#blockStart").value = end || ""; $("#blockEnd").value = ""; commit();
+    $("#blockTitle").focus();
+  });
+  $("#sched").addEventListener("click", (e) => {
+    const id = e.target.closest("[data-delblk]")?.dataset.delblk; if (!id) return;
+    state.blocks = state.blocks.filter((b) => b.id !== id); commit();
+  });
+  $("#glasses").addEventListener("click", (e) => {
+    const g = e.target.closest("[data-g]"); if (!g) return;
+    const i = Number(g.dataset.g);
+    state.water = state.water === i + 1 ? i : i + 1; commit();
+  });
+  $("#moods").addEventListener("click", (e) => {
+    const m = e.target.closest("[data-mood]")?.dataset.mood; if (!m) return;
+    state.mood = state.mood === m ? "" : m; commit();
+  });
+  $("#note").addEventListener("input", (e) => { state.note = e.target.value; commit(false); });
+  $("#startFresh").addEventListener("click", () => { state = blank(); markStarted(); commit(); });
+  $("#keepSample").addEventListener("click", () => commit());
+  $("#prevDay").addEventListener("click", () => openDay(shiftKey(viewKey, -1)));
+  $("#nextDay").addEventListener("click", () => openDay(shiftKey(viewKey, 1)));
+  $("#todayBtn").addEventListener("click", () => openDay(todayKey()));
+  window.addEventListener("pagehide", () => { if (pending) flush(); });
+
+  // Keep the arc, the "now" line and the greeting current.
+  let lastToday = todayKey();
+  setInterval(() => {
+    const t = todayKey();
+    if (t !== lastToday) { const wasToday = viewKey === lastToday; lastToday = t; if (wasToday) { openDay(t); return; } }
+    renderHeader(); renderArc(); renderSched();
+  }, 30000);
+
+  renderAll();
+  setSync();
+  connect();
+})();
+</script>
