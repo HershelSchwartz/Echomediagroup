@@ -1,5 +1,5 @@
 import {
-  $, api, createMap, currentPosition, DEFAULT_CENTER, fmtLoc, loadSession, money, placeMarker, saveSession,
+  $, api, connectSocket, createMap, currentPosition, DEFAULT_CENTER, fmtLoc, loadSession, money, placeMarker, saveSession,
 } from './common.js';
 
 // What the driver does next at each stage of a trip.
@@ -48,7 +48,7 @@ $('signup').addEventListener('submit', async (e) => {
 function connect() {
   showError();
   socket?.close();
-  socket = io({ auth: { role: 'driver', id: state.session.id, token: state.session.token } });
+  socket = connectSocket({ role: 'driver', id: state.session.id, token: state.session.token });
   socket.on('connect_error', (err) => {
     if (err.message === 'unauthorized') {
       socket.close();

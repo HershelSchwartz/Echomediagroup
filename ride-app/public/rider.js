@@ -1,5 +1,5 @@
 import {
-  $, api, createMap, currentPosition, DEFAULT_CENTER, fmtLoc, loadSession, money, placeMarker, saveSession,
+  $, api, connectSocket, createMap, currentPosition, DEFAULT_CENTER, fmtLoc, loadSession, money, placeMarker, saveSession,
 } from './common.js';
 
 const STATUS_COPY = {
@@ -43,7 +43,7 @@ function start() {
 
 function connect() {
   socket?.close();
-  socket = io({ auth: { role: 'rider', id: state.session.id, token: state.session.token } });
+  socket = connectSocket({ role: 'rider', id: state.session.id, token: state.session.token });
   socket.on('connect_error', (err) => {
     // The server keeps accounts in memory, so a restart invalidates saved sessions.
     if (err.message === 'unauthorized') {

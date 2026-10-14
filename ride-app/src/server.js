@@ -6,11 +6,20 @@ import { Dispatcher, DispatchError } from './dispatch.js';
 
 const publicDir = fileURLToPath(new URL('../public', import.meta.url));
 const leafletDir = fileURLToPath(new URL('../node_modules/leaflet/dist', import.meta.url));
+const socketClientDir = fileURLToPath(new URL('../node_modules/socket.io-client/dist', import.meta.url));
 
-export function createApp({ dispatcherOptions = {} } = {}) {
+// Origins the packaged phone apps load from (iOS, then Android).
+const DEFAULT_APP_ORIGINS = ['capacitor://localhost', 'https://localhost'];
+
+function parseOrigins(value) {
+  return value ? value.split(',').map((o) => o.trim()).filter(Boolean) : DEFAULT_APP_ORIGINS;
+}
+
+export function createApp({ dispatcherOptions = {}, corsOrigins = parseOrigins(process.env.CORS_ORIGINS) } = {}) {
+  const allowedOrigins = new Set(corsOrigins);
   const app = express();
   const httpServer = createServer(app);
-  const io = new Server(httpServer);
+  const io = new Server(httpServer, { cors: { origin: [...allowedOrigins] } });
   const dispatcher = new Dispatcher({
     ...dispatcherOptions,
     notify: (role, id, event, payload) => io.to(`${role}:${id}`).emit(event, payload),
@@ -19,6 +28,22 @@ export function createApp({ dispatcherOptions = {} } = {}) {
   app.use(express.json({ limit: '10kb' }));
   app.use(express.static(publicDir));
   app.use('/vendor/leaflet', express.static(leafletDir));
+  app.use('/vendor/socket.io', express.static(socketClientDir));
+
+  // The phone apps call the API from their own origin, so allow those explicitly.
+  app.use('/api', (req, res, next) => {
+    const origin = req.get('origin');
+    if (origin && allowedOrigins.has(origin)) {
+      res.set({
+        'Access-Control-Allow-Origin': origin,
+        'Access-Control-Allow-Headers': 'content-type, x-user-id, x-token',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        Vary: 'Origin',
+      });
+      if (req.method === 'OPTIONS') return res.sendStatus(204);
+    }
+    next();
+  });
 
   // Every authenticated request carries x-user-id and x-token from registration.
   const auth = (role) => (req, _res, next) => {

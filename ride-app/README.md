@@ -23,6 +23,10 @@ Then open two browser tabs:
 
 Run the tests with `npm test`.
 
+## Phone apps
+
+The rider and driver apps also ship as native Android and iOS apps. See [`mobile/README.md`](mobile/README.md) for running them on your phone and publishing them to the stores.
+
 ## How it works
 
 | Part | File | What it does |
@@ -71,5 +75,5 @@ This is a working prototype. These are the next steps, roughly in priority order
 - **Payments.** Add card capture at request time and charge on completion, through a payment provider such as Stripe.
 - **Routing.** Fares and ETAs use straight-line distance × 1.3. Use a routing engine such as OSRM, Valhalla or a hosted directions API for real road distance and turn-by-turn directions.
 - **Map tiles.** The public OpenStreetMap tile server is fine for development only. Production traffic needs a tile provider.
-- **Native apps.** Ship the rider and driver apps as React Native or Flutter mobile apps; drivers need background location tracking.
+- **Phone apps.** The phone apps work while open. Drivers still need background location and push notifications; see `mobile/README.md`.
 - **Ops.** Add ratings, receipts, trip history, support tools, rate limiting and scaling Socket.IO across servers with the Redis adapter.

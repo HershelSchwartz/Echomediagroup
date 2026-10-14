@@ -8,7 +8,8 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
-    "test": "node --test"
+    "test": "node --test",
+    "mobile:build": "node scripts/build-mobile.js"
   },
   "engines": {
     "node": ">=20"
@@ -16,9 +17,7 @@
   "dependencies": {
     "express": "4.22.3",
     "leaflet": "1.9.4",
-    "socket.io": "4.8.1"
-  },
-  "devDependencies": {
+    "socket.io": "4.8.1",
     "socket.io-client": "4.8.1"
   }
 }

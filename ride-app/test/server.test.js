@@ -90,3 +90,22 @@ test('bad input returns a 400 with an error code', async () => {
   assert.equal(res.status, 400);
   assert.equal(res.body.error, 'invalid_location');
 });
+
+test('phone app origins may call the API cross-origin', async () => {
+  const preflight = await fetch(`${base}/api/rides`, {
+    method: 'OPTIONS',
+    headers: { origin: 'capacitor://localhost', 'access-control-request-headers': 'x-token' },
+  });
+  assert.equal(preflight.status, 204);
+  assert.equal(preflight.headers.get('access-control-allow-origin'), 'capacitor://localhost');
+  assert.match(preflight.headers.get('access-control-allow-headers'), /x-token/);
+
+  const other = await fetch(`${base}/api/health`, { headers: { origin: 'https://evil.example' } });
+  assert.equal(other.headers.get('access-control-allow-origin'), null);
+});
+
+test('serves the bundled map and socket libraries', async () => {
+  for (const path of ['/vendor/leaflet/leaflet.js', '/vendor/socket.io/socket.io.min.js', '/config.js']) {
+    assert.equal((await fetch(base + path)).status, 200, path);
+  }
+});

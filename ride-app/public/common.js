@@ -1,6 +1,14 @@
 // Shared helpers for the rider and driver apps.
 export const DEFAULT_CENTER = { lat: 40.7128, lng: -74.006 };
 
+const CONFIG = window.ECHORIDE_CONFIG ?? {};
+const SERVER = (CONFIG.serverUrl ?? '').replace(/\/$/, '');
+
+// Inside a phone app there is no "other app" page to link to.
+if (CONFIG.app) document.querySelectorAll('.switch-app').forEach((a) => a.remove());
+
+export const connectSocket = (auth) => io(SERVER || undefined, { auth });
+
 export function loadSession(role) {
   try {
     return JSON.parse(localStorage.getItem(`echoride:${role}`));
@@ -21,7 +29,7 @@ export function saveSession(role, session) {
 export async function api(path, { body, session, method } = {}) {
   const headers = { 'content-type': 'application/json' };
   if (session) Object.assign(headers, { 'x-user-id': session.id, 'x-token': session.token });
-  const res = await fetch(path, {
+  const res = await fetch(SERVER + path, {
     method: method ?? (body ? 'POST' : 'GET'),
     headers,
     body: body && JSON.stringify(body),
