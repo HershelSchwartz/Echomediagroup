@@ -1,5 +1,6 @@
 // Echo Media Group — chapter inks for the bar, section entrances, the band drift, and the room tester.
 (() => {
+  document.documentElement.classList.add('js');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // The bar takes the ink of whichever chapter sits under it.
