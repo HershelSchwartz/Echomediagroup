@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EchoRide Driver</title>
+  <link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div id="map"></div>
+  <section class="panel">
+    <div class="brand"><h1>EchoRide Driver</h1><a href="rider.html">Ride instead</a></div>
+
+    <form id="signup" class="hidden">
+      <h2>Drive with EchoRide</h2>
+      <label for="name">Your name</label>
+      <input id="name" autocomplete="given-name" maxlength="40" required>
+      <label for="vehicle">Vehicle</label>
+      <input id="vehicle" placeholder="e.g. Silver Toyota Camry" maxlength="60" required>
+      <button type="submit">Start driving</button>
+    </form>
+
+    <div id="home" class="hidden">
+      <div class="status-line"><span class="badge" id="statusBadge">Offline</span><span class="muted" id="vehicleText"></span></div>
+      <p class="muted" id="homeHint">Tap the map to place your car, then go online.</p>
+      <button id="toggleOnline">Go online</button>
+      <label class="toggle"><input type="checkbox" id="gps"> Follow my device's GPS</label>
+    </div>
+
+    <div id="offer" class="hidden">
+      <h2>New ride request</h2>
+      <p class="muted" id="offerDetail"></p>
+      <div class="fare" id="offerFare"></div>
+      <ul class="stops">
+        <li><span class="dot pickup"></span><span id="offerPickup"></span></li>
+        <li><span class="dot dropoff"></span><span id="offerDropoff"></span></li>
+      </ul>
+      <div class="row">
+        <button class="secondary" id="decline">Decline</button>
+        <button id="accept">Accept (<span id="countdown"></span>s)</button>
+      </div>
+    </div>
+
+    <div id="trip" class="hidden">
+      <h2 id="tripTitle"></h2>
+      <p class="muted" id="tripDetail"></p>
+      <ul class="stops">
+        <li><span class="dot pickup"></span><span id="tripPickup"></span></li>
+        <li><span class="dot dropoff"></span><span id="tripDropoff"></span></li>
+      </ul>
+      <button id="step"></button>
+      <label class="toggle"><input type="checkbox" id="autodrive"> Simulate driving to the next stop</label>
+    </div>
+
+    <p class="error" id="error"></p>
+  </section>
+
+  <script src="/vendor/leaflet/leaflet.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="module" src="driver.js"></script>
+</body>
+</html>

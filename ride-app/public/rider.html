@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EchoRide Rider</title>
+  <link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div id="map"></div>
+  <section class="panel">
+    <div class="brand"><h1>EchoRide</h1><a href="driver.html">Drive instead</a></div>
+
+    <form id="signup" class="hidden">
+      <h2>Get a ride</h2>
+      <label for="name">Your name</label>
+      <input id="name" autocomplete="given-name" maxlength="40" required>
+      <button type="submit">Continue</button>
+    </form>
+
+    <div id="plan" class="hidden">
+      <h2 id="greeting">Where to?</h2>
+      <p class="muted" id="hint">Tap the map to set your pickup.</p>
+      <ul class="stops">
+        <li><span class="dot pickup"></span><span id="pickupText">Pickup not set</span></li>
+        <li><span class="dot dropoff"></span><span id="dropoffText">Drop-off not set</span></li>
+      </ul>
+      <div id="quote" class="hidden">
+        <div class="fare" id="fare"></div>
+        <p class="muted" id="quoteDetail"></p>
+      </div>
+      <button id="request" disabled>Request ride</button>
+      <div class="row">
+        <button class="secondary" id="useGps">Pickup at my location</button>
+        <button class="secondary" id="reset">Clear</button>
+      </div>
+    </div>
+
+    <div id="trip" class="hidden">
+      <div class="status-line"><span class="pulse" id="tripPulse"></span><h2 id="tripTitle"></h2></div>
+      <p class="muted" id="tripDetail"></p>
+      <ul class="stops">
+        <li><span class="dot pickup"></span><span id="tripPickup"></span></li>
+        <li><span class="dot dropoff"></span><span id="tripDropoff"></span></li>
+      </ul>
+      <p><span class="badge" id="tripFare"></span></p>
+      <button class="danger" id="cancel">Cancel ride</button>
+      <button class="hidden" id="done">Book another ride</button>
+    </div>
+
+    <p class="error" id="error"></p>
+  </section>
+
+  <script src="/vendor/leaflet/leaflet.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="module" src="rider.js"></script>
+</body>
+</html>
