@@ -1,0 +1,615 @@
+<!doctype html>
+<!--
+  Echo Media Group — agency site.
+  TODO before launch:
+    - Contact email / phone / location in the contact section and footer
+    - Replace placeholder work cards (marked data-placeholder) with real case studies
+    - Social links in footer
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Echo Media Group — Brands that carry</title>
+  <meta name="description" content="Echo Media Group is a creative studio for web design, branding, video and social content.">
+  <meta name="theme-color" content="#0E0E0E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0E0E0E;
+      --ink-2: #171717;
+      --line-dark: #2B2B2B;
+      --bone: #F2EFE8;
+      --bone-2: #E7E3D9;
+      --line: #CFCABD;
+      --signal: #FF4D8D;
+      --signal-ink: #C8175A;
+      --text: #0E0E0E;
+      --muted: #5B5852;
+      --on-dark: #F2EFE8;
+      --on-dark-muted: #A6A29A;
+      --font-display: "Archivo", system-ui, sans-serif;
+      --font-body: "Space Grotesk", system-ui, sans-serif;
+      --wrap: 1280px;
+      --gutter: 20px;
+      --ease: cubic-bezier(.2,.7,.2,1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { margin: 0; font: 400 17px/1.6 var(--font-body); color: var(--text); background: var(--bone); -webkit-font-smoothing: antialiased; }
+    img, svg { display: block; max-width: 100%; }
+    a { color: inherit; }
+    h1, h2, h3 { font-family: var(--font-display); margin: 0; line-height: .95; letter-spacing: -0.035em; font-weight: 800; }
+    p { margin: 0; }
+    .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gutter); }
+    .clean { list-style: none; margin: 0; padding: 0; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    :focus-visible { outline: 3px solid var(--signal); outline-offset: 3px; }
+    .skip { position: absolute; left: 12px; top: -60px; background: var(--signal); color: var(--ink); padding: 10px 14px; font-weight: 600; z-index: 100; }
+    .skip:focus { top: 12px; }
+    .icon { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: square; flex-shrink: 0; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 24px;
+      font: 600 16px/1 var(--font-body); text-decoration: none; cursor: pointer; border: 2px solid currentColor;
+      transition: background-color .2s var(--ease), color .2s var(--ease), transform .2s var(--ease);
+    }
+    .btn .icon { transition: transform .25s var(--ease); }
+    .btn:hover .icon { transform: translateX(4px); }
+    .btn-signal { background: var(--signal); color: var(--ink); border-color: var(--signal); }
+    .btn-signal:hover { background: var(--bone); border-color: var(--bone); }
+    .btn-line { background: transparent; }
+    .btn-line:hover { background: var(--on-dark); color: var(--ink); border-color: var(--on-dark); }
+
+    .label { font: 600 13px/1 var(--font-body); letter-spacing: .14em; text-transform: uppercase; }
+
+    /* Header */
+    .site-header { position: sticky; top: 0; z-index: 50; background: var(--ink); color: var(--on-dark); border-bottom: 1px solid var(--line-dark); }
+    .site-header .wrap { display: flex; align-items: center; justify-content: space-between; height: 72px; gap: 16px; }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .logo-mark { width: 34px; height: 34px; }
+    .logo-word { font: 900 24px/1 var(--font-display); letter-spacing: -0.04em; }
+    .logo-word small { display: block; font: 600 9px/1 var(--font-body); letter-spacing: .32em; color: var(--on-dark-muted); margin-top: 4px; }
+    .nav { display: none; gap: 32px; }
+    .nav a { text-decoration: none; color: var(--on-dark-muted); font-weight: 500; font-size: 15px; transition: color .2s; }
+    .nav a:hover { color: var(--on-dark); }
+    .header-cta { min-height: 44px; padding: 0 18px; font-size: 15px; }
+
+    /* Hero */
+    .hero { background: var(--ink); color: var(--on-dark); position: relative; overflow: hidden; }
+    .hero .wrap { position: relative; padding-top: 56px; padding-bottom: 0; min-height: min(86vh, 820px); display: flex; flex-direction: column; }
+    .rings { position: absolute; right: -30%; top: 50%; width: 120vw; max-width: 1100px; aspect-ratio: 1; transform: translateY(-50%); pointer-events: none; }
+    .rings { opacity: .7; }
+    .rings span { position: absolute; inset: 0; margin: auto; border: 1.5px solid var(--line-dark); border-radius: 50%; }
+    .rings span:nth-child(1) { width: 12%; height: 12%; background: var(--signal); border: 0; }
+    .rings span:nth-child(2) { width: 28%; height: 28%; border-color: var(--signal); }
+    .rings span:nth-child(3) { width: 46%; height: 46%; border-color: #5a2a3d; }
+    .rings span:nth-child(4) { width: 66%; height: 66%; }
+    .rings span:nth-child(5) { width: 86%; height: 86%; }
+    .rings .pulse { width: 12%; height: 12%; border: 2px solid var(--signal); animation: echo 4.2s var(--ease) infinite; opacity: 0; }
+    .rings .pulse.p2 { animation-delay: 1.4s; }
+    .rings .pulse.p3 { animation-delay: 2.8s; }
+    @keyframes echo { 0% { transform: scale(1); opacity: .9; } 100% { transform: scale(7.4); opacity: 0; } }
+
+    .hero-top { display: flex; align-items: center; gap: 12px; color: var(--on-dark-muted); position: relative; }
+    .hero-top .bar { width: 36px; height: 2px; background: var(--signal); }
+    .hero h1 { position: relative; font-size: clamp(56px, 12.5vw, 184px); margin: 28px 0 0; font-weight: 900; text-wrap: balance; }
+    .hero h1 em { font-style: normal; color: var(--signal); }
+    .hero-foot { position: relative; margin-top: auto; padding: 40px 0 48px; display: grid; gap: 28px; }
+    .hero-foot p { font-size: clamp(18px, 2vw, 22px); max-width: 30ch; color: var(--on-dark); }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+    .ticker { position: relative; z-index: 1; background: var(--signal); color: var(--ink); overflow: hidden; border-block: 2px solid var(--ink); }
+    .ticker-track { display: flex; width: max-content; animation: tick 32s linear infinite; }
+    .ticker-track span { font: 800 clamp(22px, 3vw, 34px)/1 var(--font-display); letter-spacing: -0.02em; padding: 18px 0; white-space: nowrap; display: inline-flex; align-items: center; }
+    .ticker-track span::after { content: ""; width: 14px; height: 14px; border-radius: 50%; border: 3px solid var(--ink); margin: 0 28px; }
+    @keyframes tick { to { transform: translateX(-50%); } }
+
+    /* Sections */
+    section { padding: 96px 0; }
+    .sec-head { display: grid; gap: 20px; margin-bottom: 48px; border-top: 2px solid var(--ink); padding-top: 20px; }
+    .sec-head h2 { font-size: clamp(44px, 7vw, 96px); text-wrap: balance; }
+    .sec-head p { color: var(--muted); font-size: 18px; max-width: 46ch; }
+    .sec-index { display: flex; justify-content: space-between; color: var(--muted); }
+
+    /* Work */
+    .work-grid { display: grid; gap: 20px; }
+    .work { align-self: start; display: block; text-decoration: none; color: inherit; border: 2px solid var(--ink); background: var(--bone); }
+    .work-art { aspect-ratio: 4 / 3; position: relative; overflow: hidden; border-bottom: 2px solid var(--ink); }
+    .work-art > * { transition: transform .5s var(--ease); }
+    .work:hover .work-art > * { transform: scale(1.04); }
+    .work-body { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; padding: 18px 20px 20px; }
+    .work-body h3 { font-size: clamp(26px, 3vw, 36px); }
+    .work-body .label { color: var(--muted); display: block; margin-top: 10px; }
+    .work-arrow { width: 48px; height: 48px; border: 2px solid var(--ink); display: grid; place-items: center; flex-shrink: 0; transition: background-color .2s, color .2s; }
+    .work:hover .work-arrow { background: var(--ink); color: var(--bone); }
+    .tag-ph { position: absolute; top: 14px; left: 14px; z-index: 2; background: var(--bone); color: var(--ink); border: 2px solid var(--ink); padding: 6px 10px; font: 600 12px/1 var(--font-body); letter-spacing: .08em; text-transform: uppercase; }
+
+    /* Arrive Taxi art */
+    .art-arrive { position: absolute; inset: 0; background: #111; display: grid; place-items: center; }
+    .art-arrive::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 14px; background: repeating-linear-gradient(90deg, #FFC72C 0 22px, #111 22px 44px); }
+    .art-arrive .mock { width: 74%; background: #FAFAF7; border: 2px solid #FFC72C; padding: 6% 7%; }
+    .art-arrive .mock b { display: block; font: 900 clamp(22px, 3.4vw, 42px)/.95 var(--font-display); letter-spacing: -0.04em; color: #111; }
+    .art-arrive .mock b i { font-style: normal; color: #E0A500; }
+    .art-arrive .mock span { display: inline-block; margin-top: 14px; background: #FFC72C; color: #111; font: 600 12px/1 var(--font-body); padding: 8px 14px; border-radius: 999px; }
+
+    .art-a { position: absolute; inset: 0; background: var(--signal); }
+    .art-a::before { content: ""; position: absolute; width: 70%; aspect-ratio: 1; left: -10%; bottom: -30%; border-radius: 50%; background: var(--ink); }
+    .art-a::after { content: ""; position: absolute; width: 34%; aspect-ratio: 1; right: 12%; top: 14%; border: 14px solid var(--ink); }
+    .art-b { position: absolute; inset: 0; background: var(--ink); background-image: repeating-linear-gradient(0deg, transparent 0 38px, #2B2B2B 38px 40px), repeating-linear-gradient(90deg, transparent 0 38px, #2B2B2B 38px 40px); }
+    .art-b::after { content: ""; position: absolute; inset: 0; margin: auto; width: 26%; aspect-ratio: 1; background: var(--signal); clip-path: polygon(0 0, 100% 50%, 0 100%); }
+    .art-c { position: absolute; inset: 0; background: var(--bone-2); display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 10%; }
+    .art-c i { background: var(--ink); }
+    .art-c i:nth-child(2), .art-c i:nth-child(6), .art-c i:nth-child(7) { background: var(--signal); }
+    .art-c i:nth-child(4), .art-c i:nth-child(8) { background: transparent; border: 3px solid var(--ink); }
+
+    /* Services */
+    .services { background: var(--ink); color: var(--on-dark); }
+    .services .sec-head { border-top-color: var(--on-dark); }
+    .services .sec-head p, .services .sec-index { color: var(--on-dark-muted); }
+    .svc-list { border-top: 1px solid var(--line-dark); }
+    .svc { border-bottom: 1px solid var(--line-dark); }
+    .svc button {
+      all: unset; box-sizing: border-box; width: 100%; cursor: pointer; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px;
+      padding: 26px 0; transition: color .2s;
+    }
+    .svc button:focus-visible { outline: 3px solid var(--signal); outline-offset: 4px; }
+    .svc-num { font: 600 14px var(--font-body); color: var(--on-dark-muted); width: 36px; }
+    .svc-name { font: 800 clamp(30px, 5.4vw, 68px)/1 var(--font-display); letter-spacing: -0.035em; transition: color .2s, transform .3s var(--ease); }
+    .svc button:hover .svc-name, .svc button[aria-expanded="true"] .svc-name { color: var(--signal); }
+    .svc-toggle { width: 44px; height: 44px; border: 2px solid var(--line-dark); display: grid; place-items: center; transition: border-color .2s; }
+    .svc-toggle .icon { transition: transform .3s var(--ease); }
+    .svc button[aria-expanded="true"] .svc-toggle { border-color: var(--signal); }
+    .svc button[aria-expanded="true"] .svc-toggle .icon { transform: rotate(45deg); }
+    .svc-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .4s var(--ease); }
+    .svc-panel > div { overflow: hidden; }
+    .svc.open .svc-panel { grid-template-rows: 1fr; }
+    .svc-inner { display: grid; gap: 20px; padding: 0 0 32px 52px; }
+    .svc-inner p { color: var(--on-dark-muted); max-width: 52ch; font-size: 18px; }
+    .svc-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .svc-tags li { border: 1px solid var(--line-dark); padding: 6px 12px; font-size: 14px; }
+
+    /* Process */
+    .steps { display: grid; gap: 0; border: 2px solid var(--ink); }
+    .step { padding: 28px 24px 32px; border-bottom: 2px solid var(--ink); position: relative; background: var(--bone); transition: background-color .25s; }
+    .step:last-child { border-bottom: 0; }
+    .step:hover { background: var(--bone-2); }
+    .step-ring { width: 56px; height: 56px; position: relative; margin-bottom: 28px; }
+    .step-ring i { position: absolute; inset: 0; margin: auto; border-radius: 50%; border: 2px solid var(--ink); }
+    .step-ring i:first-child { background: var(--signal); border-color: var(--signal); }
+    .step h3 { font-size: 34px; }
+    .step .label { color: var(--muted); display: block; margin: 12px 0 14px; }
+    .step p { color: var(--muted); }
+
+    /* Studio */
+    .studio { background: var(--signal); color: var(--ink); }
+    .studio .sec-head { border-top-color: var(--ink); margin-bottom: 0; }
+    .studio .sec-index { color: var(--ink); }
+    .studio-body { display: grid; gap: 40px; margin-top: 40px; }
+    .studio-statement { font: 800 clamp(30px, 4.4vw, 56px)/1.05 var(--font-display); letter-spacing: -0.03em; text-wrap: balance; }
+    .values { display: grid; gap: 0; border-top: 2px solid var(--ink); }
+    .values li { padding: 18px 0; border-bottom: 2px solid var(--ink); display: grid; grid-template-columns: 40px 1fr; gap: 12px; }
+    .values strong { display: block; font: 700 20px/1.2 var(--font-display); }
+    .values span { font-size: 16px; }
+    .values .n { font-weight: 600; }
+
+    /* Contact */
+    .contact { background: var(--ink); color: var(--on-dark); }
+    .contact .sec-head { border-top-color: var(--on-dark); }
+    .contact .sec-head p, .contact .sec-index { color: var(--on-dark-muted); }
+    .contact-grid { display: grid; gap: 48px; }
+    .contact-direct a.big { font: 800 clamp(28px, 4vw, 48px)/1.1 var(--font-display); letter-spacing: -0.03em; text-decoration: none; display: inline-block; border-bottom: 3px solid var(--signal); word-break: break-word; }
+    .contact-direct a.big:hover { color: var(--signal); }
+    .contact-direct dl { margin: 32px 0 0; display: grid; gap: 18px; }
+    .contact-direct dt { color: var(--on-dark-muted); }
+    .contact-direct dd { margin: 4px 0 0; font-size: 18px; }
+
+    form { display: grid; gap: 22px; }
+    fieldset { border: 0; margin: 0; padding: 0; }
+    legend, .f label { display: block; font-weight: 600; font-size: 15px; margin-bottom: 10px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chips label { cursor: pointer; }
+    .chips input { position: absolute; opacity: 0; pointer-events: none; }
+    .chips span { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border: 1.5px solid var(--line-dark); transition: background-color .2s, color .2s, border-color .2s; }
+    .chips label:hover span { border-color: var(--on-dark-muted); }
+    .chips input:checked + span { background: var(--signal); color: var(--ink); border-color: var(--signal); }
+    .chips input:focus-visible + span { outline: 3px solid var(--signal); outline-offset: 2px; }
+    .f input, .f select, .f textarea {
+      width: 100%; background: transparent; color: var(--on-dark); border: 0; border-bottom: 2px solid var(--line-dark);
+      font: 400 18px var(--font-body); padding: 10px 0 12px; border-radius: 0; transition: border-color .2s; appearance: none;
+    }
+    .f select { background-image: linear-gradient(45deg, transparent 50%, var(--on-dark) 50%), linear-gradient(135deg, var(--on-dark) 50%, transparent 50%); background-position: calc(100% - 14px) 50%, calc(100% - 8px) 50%; background-size: 6px 6px; background-repeat: no-repeat; }
+    .f select option { color: var(--ink); }
+    .f textarea { resize: vertical; min-height: 120px; }
+    .f input::placeholder, .f textarea::placeholder { color: #6E6B65; }
+    .f input:focus, .f select:focus, .f textarea:focus { outline: none; border-bottom-color: var(--signal); }
+    .f input[aria-invalid="true"], .f textarea[aria-invalid="true"] { border-bottom-color: #FF6B6B; }
+    .err { color: #FF8A8A; font-size: 14px; margin-top: 6px; display: block; }
+    .row-2 { display: grid; gap: 22px; }
+    .form-done { border: 2px solid var(--signal); padding: 28px; }
+    .form-done h3 { font-size: 32px; margin-bottom: 10px; }
+    .form-done p { color: var(--on-dark-muted); }
+
+    /* Footer */
+    .site-footer { background: var(--ink); color: var(--on-dark-muted); border-top: 1px solid var(--line-dark); padding: 40px 0; font-size: 15px; }
+    .site-footer .wrap { display: grid; gap: 24px; }
+    .site-footer .logo { color: var(--on-dark); }
+    .foot-links { display: flex; flex-wrap: wrap; gap: 12px 28px; }
+    .foot-links a { text-decoration: none; transition: color .2s; }
+    .foot-links a:hover { color: var(--on-dark); }
+    .giant { font: 900 clamp(64px, 19vw, 300px)/.8 var(--font-display); letter-spacing: -0.06em; color: var(--ink-2); -webkit-text-stroke: 1px var(--line-dark); overflow: hidden; white-space: nowrap; user-select: none; padding-top: 24px; }
+
+    /* Reveal */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+    .reveal.in { opacity: 1; transform: none; }
+
+    @media (min-width: 720px) {
+      :root { --gutter: 32px; }
+      .work-grid { grid-template-columns: 1fr 1fr; }
+      .work:nth-child(2) { margin-top: 80px; }
+      .work:nth-child(4) { margin-top: 80px; }
+      .steps { grid-template-columns: 1fr 1fr; }
+      .step { border-right: 2px solid var(--ink); }
+      .step:nth-child(2n) { border-right: 0; }
+      .step:nth-child(3) { border-bottom: 0; }
+      .row-2 { grid-template-columns: 1fr 1fr; }
+      .site-footer .wrap { grid-template-columns: 1fr auto; align-items: center; }
+      .giant { grid-column: 1 / -1; }
+    }
+    @media (min-width: 1000px) {
+      .nav { display: flex; }
+      section { padding: 128px 0; }
+      .sec-head { grid-template-columns: 1fr 1fr; align-items: end; }
+      .sec-head .sec-index { grid-column: 1 / -1; }
+      .rings { right: -18%; width: 90vw; opacity: 1; }
+      .hero-foot { grid-template-columns: 1fr auto; align-items: end; }
+      .steps { grid-template-columns: repeat(4, 1fr); }
+      .step { border-bottom: 0; }
+      .step:nth-child(2n) { border-right: 2px solid var(--ink); }
+      .step:last-child { border-right: 0; }
+      .studio-body { grid-template-columns: 1.4fr 1fr; gap: 64px; }
+      .contact-grid { grid-template-columns: 1fr 1.3fr; gap: 80px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .rings .pulse, .ticker-track { animation: none; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+      *, *::before, *::after { transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-ne" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="logo" viewBox="0 0 34 34"><circle cx="17" cy="17" r="5" fill="#FF4D8D"/><circle cx="17" cy="17" r="10" fill="none" stroke="#FF4D8D" stroke-width="2"/><circle cx="17" cy="17" r="15.5" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  </svg>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="logo" href="#top" aria-label="Echo Media Group home">
+        <svg class="logo-mark" aria-hidden="true"><use href="#logo"/></svg>
+        <span class="logo-word">echo<small>MEDIA GROUP</small></span>
+      </a>
+      <nav class="nav" aria-label="Main">
+        <a href="#work">Work</a>
+        <a href="#services">Services</a>
+        <a href="#process">Process</a>
+        <a href="#studio">Studio</a>
+      </nav>
+      <a class="btn btn-signal header-cta" href="#contact">Start a project</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="hero" id="top">
+      <div class="rings" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span class="pulse"></span><span class="pulse p2"></span><span class="pulse p3"></span>
+      </div>
+      <div class="wrap">
+        <div class="hero-top"><span class="bar"></span><span class="label">Creative studio · Web · Brand · Video · Social</span></div>
+        <h1>Make<br>noise that <em>carries.</em></h1>
+        <div class="hero-foot">
+          <p>We design websites, brands and content that keep echoing long after the first impression.</p>
+          <div class="hero-actions">
+            <a class="btn btn-signal" href="#contact">Start a project <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+            <a class="btn btn-line" href="#work">See our work</a>
+          </div>
+        </div>
+      </div>
+      <div class="ticker" aria-hidden="true">
+        <div class="ticker-track">
+          <span>Web design</span><span>Brand identity</span><span>Video production</span><span>Social media</span><span>Motion graphics</span><span>Content strategy</span>
+          <span>Web design</span><span>Brand identity</span><span>Video production</span><span>Social media</span><span>Motion graphics</span><span>Content strategy</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- WORK -->
+    <section id="work">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <div class="sec-index label"><span>01 — Selected work</span><span>2026</span></div>
+          <h2>Work that gets talked about.</h2>
+          <p>A few recent projects across web, identity, film and social.</p>
+        </div>
+        <div class="work-grid">
+          <a class="work reveal" href="../arrive-taxi/index.html">
+            <div class="work-art">
+              <div class="art-arrive"><div class="mock"><b>Wherever you’re headed, <i>arrive</i> on time.</b><span>Book a ride</span></div></div>
+            </div>
+            <div class="work-body">
+              <div><h3>Arrive Taxi</h3><span class="label">Website · Booking flow</span></div>
+              <span class="work-arrow" aria-hidden="true"><svg class="icon"><use href="#i-ne"/></svg></span>
+            </div>
+          </a>
+          <!-- TODO: replace with real case studies -->
+          <a class="work reveal" href="#contact" data-placeholder>
+            <div class="work-art"><span class="tag-ph">Placeholder</span><div class="art-a"></div></div>
+            <div class="work-body">
+              <div><h3>Your brand here</h3><span class="label">Brand identity</span></div>
+              <span class="work-arrow" aria-hidden="true"><svg class="icon"><use href="#i-ne"/></svg></span>
+            </div>
+          </a>
+          <a class="work reveal" href="#contact" data-placeholder>
+            <div class="work-art"><span class="tag-ph">Placeholder</span><div class="art-b"></div></div>
+            <div class="work-body">
+              <div><h3>Launch film</h3><span class="label">Video production</span></div>
+              <span class="work-arrow" aria-hidden="true"><svg class="icon"><use href="#i-ne"/></svg></span>
+            </div>
+          </a>
+          <a class="work reveal" href="#contact" data-placeholder>
+            <div class="work-art"><span class="tag-ph">Placeholder</span><div class="art-c"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+            <div class="work-body">
+              <div><h3>Always-on social</h3><span class="label">Social media</span></div>
+              <span class="work-arrow" aria-hidden="true"><svg class="icon"><use href="#i-ne"/></svg></span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section class="services" id="services">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <div class="sec-index label"><span>02 — Services</span><span>What we do</span></div>
+          <h2>Four ways to be heard.</h2>
+          <p>Hire us for one, or let us run the whole thing — strategy through launch and beyond.</p>
+        </div>
+        <ul class="clean svc-list">
+          <li class="svc open">
+            <button type="button" aria-expanded="true" aria-controls="svc-1"><span class="svc-num">01</span><span class="svc-name">Web design</span><span class="svc-toggle" aria-hidden="true"><svg class="icon"><use href="#i-plus"/></svg></span></button>
+            <div class="svc-panel" id="svc-1"><div><div class="svc-inner">
+              <p>Fast, accessible websites that look sharp on every screen and turn visitors into enquiries.</p>
+              <ul class="clean svc-tags"><li>Websites</li><li>Landing pages</li><li>E-commerce</li><li>UX &amp; UI</li><li>Development</li></ul>
+            </div></div></div>
+          </li>
+          <li class="svc">
+            <button type="button" aria-expanded="false" aria-controls="svc-2"><span class="svc-num">02</span><span class="svc-name">Branding</span><span class="svc-toggle" aria-hidden="true"><svg class="icon"><use href="#i-plus"/></svg></span></button>
+            <div class="svc-panel" id="svc-2"><div><div class="svc-inner">
+              <p>Names, logos and visual systems built to be recognised in a split second — and remembered.</p>
+              <ul class="clean svc-tags"><li>Strategy</li><li>Logo &amp; identity</li><li>Guidelines</li><li>Packaging</li></ul>
+            </div></div></div>
+          </li>
+          <li class="svc">
+            <button type="button" aria-expanded="false" aria-controls="svc-3"><span class="svc-num">03</span><span class="svc-name">Video &amp; motion</span><span class="svc-toggle" aria-hidden="true"><svg class="icon"><use href="#i-plus"/></svg></span></button>
+            <div class="svc-panel" id="svc-3"><div><div class="svc-inner">
+              <p>Brand films, product videos and short-form edits — scripted, shot and cut for where they’ll be watched.</p>
+              <ul class="clean svc-tags"><li>Brand films</li><li>Product video</li><li>Motion graphics</li><li>Short-form</li></ul>
+            </div></div></div>
+          </li>
+          <li class="svc">
+            <button type="button" aria-expanded="false" aria-controls="svc-4"><span class="svc-num">04</span><span class="svc-name">Social media</span><span class="svc-toggle" aria-hidden="true"><svg class="icon"><use href="#i-plus"/></svg></span></button>
+            <div class="svc-panel" id="svc-4"><div><div class="svc-inner">
+              <p>Content calendars, design and community management that keep your audience coming back.</p>
+              <ul class="clean svc-tags"><li>Content strategy</li><li>Creative</li><li>Management</li><li>Paid social</li></ul>
+            </div></div></div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- PROCESS -->
+    <section id="process">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <div class="sec-index label"><span>03 — Process</span><span>How we work</span></div>
+          <h2>From whisper to echo.</h2>
+          <p>Every project moves through four stages, so you always know what’s happening and what’s next.</p>
+        </div>
+        <ol class="clean steps">
+          <li class="step reveal">
+            <div class="step-ring" aria-hidden="true"><i style="width:28%;height:28%"></i></div>
+            <h3>Listen</h3><span class="label">Week 1</span>
+            <p>We learn your business, audience and goals, then agree on what success looks like.</p>
+          </li>
+          <li class="step reveal">
+            <div class="step-ring" aria-hidden="true"><i style="width:28%;height:28%"></i><i style="width:62%;height:62%"></i></div>
+            <h3>Shape</h3><span class="label">Weeks 2–3</span>
+            <p>Strategy, concepts and direction. You see ideas early and steer before we build.</p>
+          </li>
+          <li class="step reveal">
+            <div class="step-ring" aria-hidden="true"><i style="width:28%;height:28%"></i><i style="width:62%;height:62%"></i><i style="width:96%;height:96%"></i></div>
+            <h3>Make</h3><span class="label">Weeks 3–6</span>
+            <p>Design, build, shoot and edit — with regular check-ins and no surprises.</p>
+          </li>
+          <li class="step reveal">
+            <div class="step-ring" aria-hidden="true"><i style="width:28%;height:28%"></i><i style="width:62%;height:62%"></i><i style="width:96%;height:96%"></i><i style="width:130%;height:130%;opacity:.35"></i></div>
+            <h3>Amplify</h3><span class="label">Launch &amp; after</span>
+            <p>We launch, measure what lands and keep improving so the work keeps carrying.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- STUDIO -->
+    <section class="studio" id="studio">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <div class="sec-index label"><span>04 — Studio</span><span>Who we are</span></div>
+        </div>
+        <div class="studio-body">
+          <p class="studio-statement reveal">We’re a small, senior team of designers, developers and filmmakers. No hand-offs to juniors, no jargon — just people who care how your work lands.</p>
+          <ul class="clean values reveal">
+            <li><span class="n">A</span><div><strong>Clarity over noise</strong><span>One clear message beats ten clever ones.</span></div></li>
+            <li><span class="n">B</span><div><strong>Made to be used</strong><span>Accessible, fast and easy for your team to run.</span></div></li>
+            <li><span class="n">C</span><div><strong>Straight talk</strong><span>Honest timelines, fixed quotes, regular updates.</span></div></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="contact" id="contact">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <div class="sec-index label"><span>05 — Contact</span><span>Let’s talk</span></div>
+          <h2>Got something to say?</h2>
+          <p>Tell us a little about your project. We reply within one working day.</p>
+        </div>
+        <div class="contact-grid">
+          <div class="contact-direct reveal">
+            <!-- TODO: real email, phone and location -->
+            <a class="big" href="mailto:hello@example.com">hello@example.com</a>
+            <dl>
+              <div><dt>Phone</dt><dd><a href="tel:+10000000000">(000) 000-0000</a></dd></div>
+              <div><dt>Studio</dt><dd>Your city, Your country</dd></div>
+              <div><dt>Hours</dt><dd>Mon–Fri, 9:00–18:00</dd></div>
+            </dl>
+          </div>
+
+          <div class="reveal">
+            <form id="brief" novalidate>
+              <fieldset>
+                <legend>What do you need?</legend>
+                <div class="chips">
+                  <label><input type="checkbox" name="need" value="Website"><span>Website</span></label>
+                  <label><input type="checkbox" name="need" value="Branding"><span>Branding</span></label>
+                  <label><input type="checkbox" name="need" value="Video"><span>Video</span></label>
+                  <label><input type="checkbox" name="need" value="Social media"><span>Social media</span></label>
+                  <label><input type="checkbox" name="need" value="Not sure yet"><span>Not sure yet</span></label>
+                </div>
+              </fieldset>
+              <div class="row-2">
+                <div class="f">
+                  <label for="name">Your name</label>
+                  <input id="name" name="name" autocomplete="name" required aria-describedby="name-err">
+                  <span class="err" id="name-err" role="alert"></span>
+                </div>
+                <div class="f">
+                  <label for="email">Email</label>
+                  <input id="email" name="email" type="email" autocomplete="email" required aria-describedby="email-err">
+                  <span class="err" id="email-err" role="alert"></span>
+                </div>
+              </div>
+              <div class="f">
+                <label for="budget">Budget</label>
+                <select id="budget" name="budget">
+                  <option>Not sure yet</option><option>Under $5k</option><option>$5k – $15k</option><option>$15k – $40k</option><option>$40k+</option>
+                </select>
+              </div>
+              <div class="f">
+                <label for="msg">Tell us about the project</label>
+                <textarea id="msg" name="msg" placeholder="Goals, timeline, links — anything helpful" required aria-describedby="msg-err"></textarea>
+                <span class="err" id="msg-err" role="alert"></span>
+              </div>
+              <div><button class="btn btn-signal" type="submit">Send brief <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button></div>
+            </form>
+            <div class="form-done" id="form-done" hidden tabindex="-1">
+              <h3>Your email is ready.</h3>
+              <p>We’ve opened your email app with the brief filled in — just hit send. Nothing opened? Email us directly at hello@example.com.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <a class="logo" href="#top" aria-label="Echo Media Group home">
+        <svg class="logo-mark" aria-hidden="true"><use href="#logo"/></svg>
+        <span class="logo-word">echo<small>MEDIA GROUP</small></span>
+      </a>
+      <!-- TODO: real social links -->
+      <nav class="foot-links" aria-label="Footer">
+        <a href="#work">Work</a><a href="#services">Services</a><a href="#contact">Contact</a>
+        <a href="#">Instagram</a><a href="#">LinkedIn</a>
+        <span>© <span id="year">2026</span> Echo Media Group</span>
+      </nav>
+      <div class="giant" aria-hidden="true">echo echo echo</div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      // TODO: real inbox
+      var INBOX = "hello@example.com";
+      document.getElementById("year").textContent = new Date().getFullYear();
+
+      // Services accordion
+      document.querySelectorAll(".svc button").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var open = btn.getAttribute("aria-expanded") === "true";
+          btn.setAttribute("aria-expanded", String(!open));
+          btn.parentElement.classList.toggle("open", !open);
+        });
+      });
+
+      // Scroll reveal
+      var items = document.querySelectorAll(".reveal");
+      if ("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+        }, { rootMargin: "0px 0px -10% 0px" });
+        items.forEach(function (el) { io.observe(el); });
+      } else {
+        items.forEach(function (el) { el.classList.add("in"); });
+      }
+
+      // Brief form -> pre-filled email (no backend)
+      var form = document.getElementById("brief");
+      function check(id, msg, test) {
+        var el = document.getElementById(id), v = el.value.trim();
+        var ok = test ? test(v) : v.length > 0;
+        el.setAttribute("aria-invalid", String(!ok));
+        document.getElementById(id + "-err").textContent = ok ? "" : msg;
+        return ok;
+      }
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var ok = [
+          check("name", "Please tell us your name."),
+          check("email", "Please enter a valid email.", function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }),
+          check("msg", "A sentence or two about the project helps.")
+        ];
+        if (ok.indexOf(false) !== -1) { form.querySelector("[aria-invalid=true]").focus(); return; }
+        var f = form.elements;
+        var needs = Array.prototype.filter.call(form.querySelectorAll("[name=need]:checked"), function (c) { return true; }).map(function (c) { return c.value; });
+        var body = [
+          "Name: " + f.name.value.trim(),
+          "Email: " + f.email.value.trim(),
+          "Needs: " + (needs.join(", ") || "—"),
+          "Budget: " + f.budget.value,
+          "",
+          f.msg.value.trim()
+        ].join("\n");
+        window.location.href = "mailto:" + INBOX + "?subject=" + encodeURIComponent("New project brief — " + f.name.value.trim()) + "&body=" + encodeURIComponent(body);
+        form.hidden = true;
+        var done = document.getElementById("form-done");
+        done.hidden = false;
+        done.focus();
+      });
+    })();
+  </script>
+</body>
+</html>
