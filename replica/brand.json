@@ -1,0 +1,6 @@
+{
+  "name": "Plainfare",
+  "avoid": ["Uber", "Uber Technologies", "UberX", "Uber One"],
+  "domains": ["uber.com", "ubereats.com"],
+  "colors": ["#000000", "#276ef1", "#06c167"]
+}

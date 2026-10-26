@@ -7,9 +7,9 @@
   --color-border-input: #7b8391;
   --color-text: #111318;
   --color-text-muted: #545b66;
-  --color-accent: #1d2433;
+  --color-accent: #3b2fc9;
   --color-on-accent: #ffffff;
-  --color-accent-soft: #e8eaef;
+  --color-accent-soft: #eceafb;
   --color-danger: #b42323;
   --color-on-danger: #ffffff;
   --color-success: #17703f;
@@ -18,7 +18,7 @@
   --color-map-land: #eef0f3;
   --color-map-road: #ffffff;
   --color-map-water: #d6e4f0;
-  --color-route: #1d2433;
+  --color-route: #3b2fc9;
   --color-pickup: #17703f;
   --color-dropoff: #111318;
   --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;

@@ -1,9 +1,9 @@
 {
-  "name": "Ride",
-  "short_name": "Ride",
+  "name": "Plainfare",
+  "short_name": "Plainfare",
   "start_url": "/ride",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "theme_color": "#3b2fc9",
   "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
 }
