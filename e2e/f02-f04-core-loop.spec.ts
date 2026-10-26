@@ -4,6 +4,10 @@ import { test, expect, signIn, goOnline, requestRide, hold, axe } from "./helper
 test("F02/F03/F04-H1: request, match, ride, pay, rate, tip", async ({ browser, users }) => {
   const driver = await users();
   await signIn(driver.page, "+15550000201", "/drive");
+  // A 1x1 PNG as the driver's photo; the rider should see it on the driver card.
+  const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64");
+  const up = await driver.page.request.post("/api/me/photo", { multipart: { file: { name: "me.png", mimeType: "image/png", buffer: png } } });
+  expect(up.ok()).toBe(true);
   await goOnline(driver.page);
 
   const rider = await users();
@@ -27,6 +31,7 @@ test("F02/F03/F04-H1: request, match, ride, pay, rate, tip", async ({ browser, u
   await expect(rider.page.getByRole("heading", { name: /Your driver is .* away|on the way/ })).toBeVisible();
   await expect(rider.page.getByTestId("driver-card")).toContainText("Dana");
   await expect(rider.page.getByTestId("driver-card")).toContainText("DEV1201");
+  await expect(rider.page.getByRole("img", { name: "Photo of Dana" })).toBeVisible();
   await axe(rider.page);
 
   // Chat both ways.

@@ -25,8 +25,8 @@ export type Trip = {
   noShowMin: number;
   times: Record<"requested" | "accepted" | "arrived" | "started" | "completed" | "cancelled" | "pickupEta", string | null>;
   cancelReason: string | null;
-  driver: { firstName: string; rating: number | null; car: { make: string; model: string; colour: string; plate: string } | null; position: { lat: number; lng: number; heading: number | null } | null } | null;
-  rider: { firstName: string; rating: number | null };
+  driver: { firstName: string; rating: number | null; photo: string | null; car: { make: string; model: string; colour: string; plate: string } | null; position: { lat: number; lng: number; heading: number | null } | null } | null;
+  rider: { firstName: string; rating: number | null; photo: string | null };
   myRating: number | null;
   tipOptions: number[];
   unread: number;

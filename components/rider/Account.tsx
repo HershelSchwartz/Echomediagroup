@@ -8,8 +8,35 @@ import { Field } from "@/components/ui/Field";
 import { Banner } from "@/components/ui/Banner";
 import { Modal } from "@/components/ui/Modal";
 import { ListRow } from "@/components/ui/ListRow";
+import { Avatar } from "@/components/ui/Avatar";
 
 type Saved = Place & { id: string; label: string };
+
+function PhotoPicker({ name }: { name: string }) {
+  const [v, setV] = useState(0);
+  const [has, setHas] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => { fetch("/api/me/photo", { method: "GET" }).then((r) => setHas(r.ok)).catch(() => {}); }, [v]);
+  async function upload(file?: File) {
+    if (!file) return;
+    setError(null);
+    const fd = new FormData();
+    fd.set("file", file);
+    const r = await fetch("/api/me/photo", { method: "POST", body: fd });
+    if (!r.ok) setError((await r.json().catch(() => ({}))).error ?? "Upload failed");
+    setV((x) => x + 1);
+  }
+  return (
+    <div className="flex items-center gap-3">
+      <Avatar name={name || "?"} src={has ? `/api/me/photo?v=${v}` : null} size={64} />
+      <label className="inline-flex h-12 cursor-pointer items-center rounded-md bg-surface px-4 font-semibold focus-within:ring-2 focus-within:ring-accent">
+        {has ? "Change photo" : "Add a photo"}
+        <input type="file" accept="image/jpeg,image/png" className="sr-only" onChange={(e) => upload(e.target.files?.[0])} />
+      </label>
+      {error && <p role="alert" className="text-sm text-danger">{error}</p>}
+    </div>
+  );
+}
 
 export function Account({ user }: { user: { name: string; email: string; phone: string; rating: number | null } }) {
   const [name, setName] = useState(user.name);
@@ -61,6 +88,7 @@ export function Account({ user }: { user: { name: string; email: string; phone: 
   return (
     <div className="space-y-8">
       {msg && <Banner variant={msg.ok ? "success" : "danger"}>{msg.text}</Banner>}
+      <PhotoPicker name={name} />
       <form onSubmit={save} className="space-y-3">
         <p className="text-sm text-text-muted">{user.phone}{user.rating != null && <span className="ml-2 inline-flex items-center gap-1"><Star className="h-3.5 w-3.5 fill-accent" aria-hidden />{user.rating.toFixed(2)} rider rating</span>}</p>
         <Field label="Name" value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" maxLength={60} />

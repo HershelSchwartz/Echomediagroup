@@ -10,6 +10,7 @@ import { Modal } from "@/components/ui/Modal";
 import { Field } from "@/components/ui/Field";
 import { ListRow } from "@/components/ui/ListRow";
 import { ChatPanel } from "@/components/shared/ChatPanel";
+import { Avatar } from "@/components/ui/Avatar";
 
 export function TripSheet({ trip, onChange }: { trip: Trip; onChange: () => void }) {
   const [cancelOpen, setCancelOpen] = useState(false);
@@ -75,7 +76,7 @@ export function TripSheet({ trip, onChange }: { trip: Trip; onChange: () => void
 
       {d && live && (
         <div className="my-3 flex items-center gap-3 rounded-md bg-surface p-3" data-testid="driver-card">
-          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-pill bg-accent text-lg font-bold text-on-accent" aria-hidden>{d.firstName[0]}</span>
+          <Avatar name={d.firstName} src={d.photo} />
           <div className="min-w-0 flex-1">
             <p className="font-semibold">{d.firstName}{d.rating != null && <span className="ml-2 inline-flex items-center gap-0.5 text-sm font-normal"><Star className="h-3.5 w-3.5 fill-accent" aria-hidden />{d.rating.toFixed(1)}<span className="sr-only"> rating</span></span>}</p>
             {d.car && <p className="truncate text-sm text-text-muted">{d.car.colour} {d.car.make} {d.car.model}</p>}

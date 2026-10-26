@@ -10,6 +10,7 @@ import { sendEmail, sendSms } from "./notify";
 import { money } from "./money";
 import { brand } from "./brand";
 import { firstName, type User } from "./auth";
+import { hasAvatar } from "./avatars";
 
 export const LIVE_STATUSES = ["matching", "accepted", "arrived", "in_progress"] as const;
 export type Place = LatLng & { address: string };
@@ -176,6 +177,8 @@ export async function tripView(t: Record<string, any>, viewer: User) {
       })
     : 0;
   const fareCents = t.final_fare_cents ?? t.quoted_fare_cents + (t.wait_fee_cents ?? 0);
+  const otherId = asRider ? t.driver_id : t.rider_id;
+  const otherPhoto = await hasAvatar(otherId);
   const showDriverPos = ["accepted", "arrived", "in_progress"].includes(t.status);
 
   return {
@@ -208,12 +211,15 @@ export async function tripView(t: Record<string, any>, viewer: User) {
     cancelReason: t.cancel_reason,
     driver: driver
       ? {
-          firstName: firstName(driver.name), rating: driver.rating,
+          firstName: firstName(driver.name), rating: driver.rating, photo: asRider && otherPhoto ? `/api/trips/${t.id}/photo` : null,
           car: driver.make ? { make: driver.make, model: driver.model, colour: driver.colour, plate: driver.plate } : null,
           position: showDriverPos ? driverPos : null,
         }
       : null,
-    rider: { firstName: t.guest_name ? firstName(t.guest_name) : firstName(rider?.name ?? null), rating: rider?.rating ?? null },
+    rider: {
+      firstName: t.guest_name ? firstName(t.guest_name) : firstName(rider?.name ?? null), rating: rider?.rating ?? null,
+      photo: !asRider && otherPhoto && !t.guest_name ? `/api/trips/${t.id}/photo` : null,
+    },
     myRating: mine?.stars ?? null,
     tipOptions: asRider && t.status === "completed" && !t.tip_cents ? tipOptions(fareCents) : [],
     unread,

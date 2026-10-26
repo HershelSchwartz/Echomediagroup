@@ -15,6 +15,7 @@ import { Field } from "@/components/ui/Field";
 import { ListRow } from "@/components/ui/ListRow";
 import { StarRating } from "@/components/ui/StarRating";
 import { ChatPanel } from "@/components/shared/ChatPanel";
+import { Avatar } from "@/components/ui/Avatar";
 import { useGeolocation } from "@/components/shared/useGeolocation";
 
 type Offer = {
@@ -265,6 +266,7 @@ function TripSheet({ trip, busy, error, onArrived, onStart, onComplete, onNoShow
         {trip.status === "arrived" && <h1 className="text-xl font-bold">Waiting for {trip.rider.firstName} · {Math.floor(waited / 60)}:{String(waited % 60).padStart(2, "0")}</h1>}
         {trip.status === "in_progress" && <h1 className="text-xl font-bold">Drop off {trip.rider.firstName}{trip.etaS != null ? ` · ${fmtMin(trip.etaS)}` : ""}</h1>}
       </div>
+      {trip.rider.photo && <div className="mb-2"><Avatar name={trip.rider.firstName} src={trip.rider.photo} size={40} /></div>}
       <p className="mb-3 text-sm text-text-muted">{"address" in target ? target.address : ""}{trip.rider.rating != null && <span className="ml-2 inline-flex items-center gap-0.5"><Star className="h-3.5 w-3.5 fill-accent" aria-hidden />{trip.rider.rating.toFixed(1)}</span>}</p>
       {error && <Banner variant="danger" className="mb-2">{error}</Banner>}
       <div className="mb-3 grid grid-cols-2 gap-2">

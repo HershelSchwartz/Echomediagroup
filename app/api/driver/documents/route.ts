@@ -1,6 +1,7 @@
 import { sql } from "@/lib/db";
 import { route, fail } from "@/lib/http";
 import { requireDriver } from "@/lib/driver";
+import { saveAvatar } from "@/lib/avatars";
 
 const KINDS = ["licence", "insurance", "vehicle_photo", "profile_photo"];
 const TYPES = ["image/jpeg", "image/png", "application/pdf"];
@@ -26,5 +27,6 @@ export const POST = route(async (req) => {
     await tx`insert into driver_documents (driver_id, kind, filename, mime, bytes)
       values (${user.id}, ${kind}, ${file.name.slice(0, 100)}, ${file.type}, ${bytes})`;
   });
+  if (kind === "profile_photo" && file.type !== "application/pdf") await saveAvatar(user.id, file);
   return { ok: true };
 });

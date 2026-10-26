@@ -1,50 +1,50 @@
 feature,area,priority,original,clone,notes
-Sign up and log in with phone number and SMS code,onboarding,must,yes,no,S01 S02
-Rider profile (name email photo),onboarding,must,yes,no,S03
-Location permission with manual address fallback,onboarding,must,yes,no,S04
-Home map with current location and Where to bar,request,must,yes,no,S05
-Destination search with autocomplete,request,must,yes,no,S06 via maps provider places API
-Saved places (home work),request,must,yes,no,S05 S06
-Vehicle types with upfront price and ETA,request,must,yes,no,S07
-Confirm or adjust pickup pin,request,must,yes,no,S08
-Service area check,request,must,yes,no,out-of-area state on S08
-Matching to nearest available driver,dispatch,must,yes,no,S09 geo index + offer timeout
-Exclusive request with countdown on driver app,dispatch,must,yes,no,S22
-Re-match when driver declines or cancels,dispatch,must,yes,no,F05 edge
-No drivers available state with retry,dispatch,must,yes,no,S09
-Live driver location and ETA on rider map,trip,must,yes,no,S10 S12 realtime
-Driver card (photo name rating car plate),trip,must,yes,no,S10
-Driver go online / offline,driver,must,yes,no,S21
-Driver navigate to pickup / arrived / start / end trip,driver,must,yes,no,S23 S24 hand off turn-by-turn to Google Maps or Waze
-Driver background location reporting,driver,must,yes,no,hard part
-Push notifications (request matched arriving arrived),notifications,must,yes,no,
-Card on file and automatic charge after trip,payments,must,yes,no,S16 Stripe
-Fare calculation (base + distance + time + minimum),payments,must,yes,no,Product pricing fields
-Rider cancels with fee rules,payments,must,yes,no,S19 free window then fee
-Rate the driver and the rider,ratings,must,yes,no,S13 S25
-Trip history and receipt,history,must,yes,no,S14 S15 + receipt email
-Admin: approve drivers and view live trips,admin,must,yes,no,S28
-Driver onboarding with document upload,driver,should,yes,no,S20 background check via licensed vendor
-In-app tip after trip,payments,should,yes,no,S13
-Wait time fee after grace period,payments,should,yes,no,src 7
-In-app chat with driver,communication,should,yes,no,S11
-Masked phone call between rider and driver,communication,should,yes,no,Twilio proxy numbers
-Share trip status link,safety,should,yes,no,F07 public tracking page
-Multiple stops,request,should,yes,no,src 1
-Change destination mid-trip,trip,should,yes,no,S12
-Driver earnings screen,driver,should,yes,no,S26
-Driver payouts,payments,should,yes,no,Stripe Connect
-Help and report a trip issue / dispute a fee,support,should,yes,no,S18
-Admin: refunds and fare adjustments,admin,should,yes,no,S28
-Busy-time price multiplier (simple surge),pricing,should,yes,no,simple per-zone multiplier not Uber's model
-Request a ride for someone else,request,could,yes,no,S06 rider switcher
-Cash payment,payments,could,yes,no,market-dependent
+Sign up and log in with phone number and SMS code,onboarding,must,yes,yes,S01 S02; Twilio SMS in production; dev shows the code on screen. e2e F01
+Rider profile (name email photo),onboarding,must,yes,yes,"S03; name, email and photo (Account)"
+Location permission with manual address fallback,onboarding,must,yes,yes,S04; e2e F01-E1
+Home map with current location and Where to bar,request,must,yes,yes,S05; S05
+Destination search with autocomplete,request,must,yes,yes,S06 via maps provider places API; Mapbox when keyed; seeded landmarks otherwise
+Saved places (home work),request,must,yes,yes,S05 S06; S05 S06 S17
+Vehicle types with upfront price and ETA,request,must,yes,yes,S07; S07
+Confirm or adjust pickup pin,request,must,yes,yes,S08; tap the map to move pickup; real place name shown to the driver
+Service area check,request,must,yes,yes,out-of-area state on S08; bounding box per city
+Matching to nearest available driver,dispatch,must,yes,yes,S09 geo index + offer timeout; race-safe offers; e2e F02
+Exclusive request with countdown on driver app,dispatch,must,yes,yes,S22; 15 s offer; e2e F03
+Re-match when driver declines or cancels,dispatch,must,yes,yes,F05 edge; decline/expiry/back-out re-dispatch; not e2e covered
+No drivers available state with retry,dispatch,must,yes,yes,S09; e2e F05-E2
+Live driver location and ETA on rider map,trip,must,yes,yes,S10 S12 realtime; 2 s polling; straight-line ETA without Mapbox
+Driver card (photo name rating car plate),trip,must,yes,yes,S10; photo from the driver profile photo; e2e F04
+Driver go online / offline,driver,must,yes,yes,S21
+Driver navigate to pickup / arrived / start / end trip,driver,must,yes,yes,S23 S24 hand off turn-by-turn to Google Maps or Waze; Navigate opens Google Maps directions URL
+Driver background location reporting,driver,must,yes,partial,hard part; browser only reports while the screen is on; needs the native driver app
+Push notifications (request matched arriving arrived),notifications,must,yes,partial,in-app live updates and SMS to guest riders; no push
+Card on file and automatic charge after trip,payments,must,yes,partial,S16 Stripe; dev card path e2e tested; Stripe path written but untested until keys are added
+Fare calculation (base + distance + time + minimum),payments,must,yes,yes,Product pricing fields; unit tested
+Rider cancels with fee rules,payments,must,yes,yes,S19 free window then fee; unit + e2e F05
+Rate the driver and the rider,ratings,must,yes,yes,S13 S25; e2e F04
+Trip history and receipt,history,must,yes,yes,S14 S15 + receipt email; S14 S15 + receipt email via outbox
+Admin: approve drivers and view live trips,admin,must,yes,yes,S28; e2e F09
+Driver onboarding with document upload,driver,should,yes,partial,S20 background check via licensed vendor; form and uploads done; background-check vendor not integrated
+In-app tip after trip,payments,should,yes,yes,S13; e2e F04; also from Activity for 30 days
+Wait time fee after grace period,payments,should,yes,yes,src 7; unit tested
+In-app chat with driver,communication,should,yes,yes,S11; e2e F04
+Masked phone call between rider and driver,communication,should,yes,no,Twilio proxy numbers; needs Twilio Proxy numbers
+Share trip status link,safety,should,yes,yes,F07 public tracking page; e2e F07
+Multiple stops,request,should,yes,yes,src 1; up to 2; not e2e covered
+Change destination mid-trip,trip,should,yes,yes,S12; re-quotes; not e2e covered
+Driver earnings screen,driver,should,yes,yes,S26; e2e F04
+Driver payouts,payments,should,yes,partial,Stripe Connect; earnings ledger; Stripe Connect payouts not built
+Help and report a trip issue / dispute a fee,support,should,yes,yes,S18; e2e F06
+Admin: refunds and fare adjustments,admin,should,yes,yes,S28; e2e F06
+Busy-time price multiplier (simple surge),pricing,should,yes,yes,simple per-zone multiplier not Uber's model; unit tested; admin control
+Request a ride for someone else,request,could,yes,yes,S06 rider switcher; not e2e covered
+Cash payment,payments,could,yes,yes,market-dependent; not e2e covered
 Trip Radar (offer to several drivers),dispatch,could,yes,no,S22
-Driver destination filter,driver,could,yes,no,S27
+Driver destination filter,driver,could,yes,yes,S27; not e2e covered
 Split fare,payments,could,yes,no,
 Scheduled rides (reserve),request,could,yes,no,
 Promo codes,payments,could,yes,no,
-Safety toolkit (emergency button trip check-ins),safety,could,yes,no,
+Safety toolkit (emergency button trip check-ins),safety,could,yes,partial,"911, share, report; no automatic check-ins"
 Multi-language,platform,could,yes,no,
 Uber's driver and rider network,network,skip,yes,skip,the users are not part of the product you can rebuild
 Uber brand name logo icons and copy,brand,skip,yes,skip,owned assets; /replica-brand replaces them

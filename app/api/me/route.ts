@@ -28,6 +28,7 @@ export const DELETE = route(async () => {
   if (live) throw fail(409, "Finish or cancel your current ride before deleting your account.", "live_trip");
   await sql.begin(async (tx) => {
     await tx`delete from saved_places where user_id = ${user.id}`;
+    await tx`delete from avatars where user_id = ${user.id}`;
     await tx`delete from payment_methods where user_id = ${user.id}`;
     await tx`delete from driver_documents where driver_id = ${user.id}`;
     await tx`update driver_profiles set online = false, status = 'suspended', licence_no = 'deleted', last_lat = null, last_lng = null where user_id = ${user.id}`;
