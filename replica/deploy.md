@@ -14,7 +14,7 @@ what passed, what blocks, and the exact steps for you.
 - [x] store listing passes (`listing.py`: 0 errors, 0 warnings). Store submission waits for the native apps.
 - [x] production build passes (`next build`); `npm audit`: 0 vulnerabilities
 - [~] privacy policy and terms live at `/privacy` and `/terms`, every processor listed. **Drafts: need a lawyer's review**, and the operator entity and driver agreement filled in.
-- [x] account deletion works (Account → Delete account; tested in code path, removes profile, photo, places, payment methods, messages, sessions)
+- [~] account deletion built (Account → Delete account: removes profile, photo, places, payment methods, messages, sessions). Not yet covered by an automated test; try it once by hand before launch
 - [~] favicon, titles, manifest, email and SMS text use the brand; **final logo and OG image still to make** (logo brief in `replica/brand.md`)
 - [ ] **name screening checks not run** (USPTO, EUIPO, domains, stores, handles); see `replica/brand.md`
 
