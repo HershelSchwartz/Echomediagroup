@@ -54,3 +54,8 @@ Uber for Business and corporate accounts,other products,skip,yes,skip,outside th
 Uber One subscription,other products,skip,yes,skip,outside this slice
 Airport and partner agreements,partners,skip,yes,skip,partner deals
 Operating licence insurance and background checks,regulated,skip,yes,skip,get your own TNC/private-hire licence and use a licensed vendor
+Price lock: the upfront price is the charge (only wait time or a rider's destination change can move it),fixes,must,no,yes,fix 1; shown before Request and on the receipt
+No cancellation fee when the driver never headed to the pickup,fixes,must,no,yes,fix 2; unit + e2e F05-E3
+Open fare split: driver sees rider fare and platform cut on every offer and trip,fixes,must,no,yes,fix 3; e2e F03
+Driver suspensions need a written reason and a one-tap human review,fixes,should,no,yes,fix 4; e2e F09-N2
+First cancellation-fee dispute refunded instantly,fixes,should,no,yes,fix 5; e2e F06-H1

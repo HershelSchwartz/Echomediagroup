@@ -4,6 +4,7 @@ import { getUser } from "@/lib/auth";
 import { defaultCity } from "@/lib/trips";
 import { DriverApply } from "@/components/driver/DriverApply";
 import { DriverDocuments } from "@/components/driver/DriverDocuments";
+import { AccountReview } from "@/components/driver/AccountReview";
 import { DriverApp } from "@/components/driver/DriverApp";
 import { PageShell } from "@/components/shared/PageShell";
 import { Banner } from "@/components/ui/Banner";
@@ -22,6 +23,7 @@ export default async function DrivePage() {
         {profile.status === "pending" && <Banner className="mb-4">We're reviewing your details. Upload all four documents to speed it up. We'll text you when you're approved.</Banner>}
         {profile.status === "rejected" && <Banner variant="danger" className="mb-4">We couldn't approve your application.{profile.review_note ? ` ${profile.review_note}` : ""} Upload new documents and we'll take another look.</Banner>}
         {profile.status === "suspended" && <Banner variant="danger" className="mb-4">Your driver account is paused.{profile.review_note ? ` ${profile.review_note}` : ""} Contact support for help.</Banner>}
+        {profile.status !== "pending" && <AccountReview />}
         <DriverDocuments />
       </PageShell>
     );

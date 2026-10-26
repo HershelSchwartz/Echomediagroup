@@ -24,8 +24,8 @@ test("F05-E1: cancelling after the free window shows and charges the fee", async
   await requestRide(rider.page, "Penn Station");
   await driver.page.getByRole("button", { name: "Accept" }).click({ timeout: 20_000 });
   await expect(rider.page.getByTestId("driver-card")).toBeVisible();
-  // Move the acceptance 3 minutes into the past instead of waiting.
-  await sql`update trips set accepted_at = now() - interval '3 minutes', pickup_eta_at = now() + interval '2 minutes' where status = 'accepted'`;
+  // Move the acceptance 3 minutes into the past, with the driver most of the way there.
+  await sql`update trips set accepted_at = now() - interval '3 minutes', pickup_eta_at = now() + interval '2 minutes', accept_distance_m = 2000 where status = 'accepted'`;
   await rider.page.getByRole("button", { name: "Cancel", exact: true }).click();
   await expect(rider.page.getByText(/costs \$5\.00/)).toBeVisible();
   await rider.page.getByRole("button", { name: "Cancel ride" }).click();
@@ -35,6 +35,26 @@ test("F05-E1: cancelling after the free window shows and charges the fee", async
   await expect(driver.page.getByRole("heading", { name: "The rider cancelled" })).toBeVisible();
   rider.check();
   driver.check();
+});
+
+test("F05-E3: no fee when the driver never headed to the pickup", async ({ users }) => {
+  const driver = await users();
+  await signIn(driver.page, "+15550000202", "/drive");
+  await driver.page.getByLabel("Simulate driving (development only)").uncheck();
+  await driver.page.context().setGeolocation({ latitude: 40.745, longitude: -73.988 });
+  await goOnline(driver.page);
+  const rider = await users();
+  await signIn(rider.page, "+15550000100");
+  await requestRide(rider.page, "Penn Station");
+  await driver.page.getByRole("button", { name: "Accept" }).click({ timeout: 20_000 });
+  await expect(rider.page.getByTestId("driver-card")).toBeVisible();
+  await sql`update trips set accepted_at = now() - interval '3 minutes', pickup_eta_at = now() + interval '2 minutes' where status = 'accepted'`;
+  await rider.page.getByRole("button", { name: "Cancel", exact: true }).click();
+  await expect(rider.page.getByText("You won't be charged.")).toBeVisible();
+  await rider.page.getByRole("button", { name: "Cancel ride" }).click();
+  const [t] = await sql`select cancel_fee_cents from trips order by requested_at desc limit 1`;
+  expect(t.cancel_fee_cents).toBe(0);
+  rider.check();
 });
 
 test("F05-E2: no drivers online ends in a clear no-cars state, no charge", async ({ browser, users }) => {

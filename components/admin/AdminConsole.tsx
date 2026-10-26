@@ -85,7 +85,8 @@ function Drivers({ d, onChange }: { d: Overview; onChange: () => void }) {
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   async function review(id: string, status: string) {
-    const note = status === "approved" ? undefined : window.prompt("Note for the driver (optional)") ?? undefined;
+    const note = status === "approved" ? undefined : window.prompt("Reason the driver will see (required)") ?? undefined;
+    if (status !== "approved" && !note) return;
     setBusy(id + status);
     setError(null);
     try { await api(`/api/admin/drivers/${id}/review`, { body: { status, note } }); onChange(); }

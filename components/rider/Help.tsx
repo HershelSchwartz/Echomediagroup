@@ -34,8 +34,10 @@ export function Help() {
     setBusy(true);
     setMsg(null);
     try {
-      await api("/api/support", { body: { tripId: tripId ?? undefined, category, body: text } });
-      setMsg({ ok: true, text: "Thanks. We've got your request and will reply by email, usually within a day." });
+      const r = await api<{ refundedCents?: number }>("/api/support", { body: { tripId: tripId ?? undefined, category, body: text } });
+      setMsg({ ok: true, text: r.refundedCents
+        ? `Done. We've refunded ${fmtMoney(r.refundedCents)} to your payment method.`
+        : "Thanks. We've got your request and a person will reply by email, usually within a day." });
       setText(""); setCategory("");
       load();
     } catch (err) {

@@ -28,7 +28,7 @@ test("F07-H1: share a live trip; the public page shows status without the rider'
   rider.check();
 });
 
-test("F06-H1: rider reports a fee, admin refunds it, rider sees the answer", async ({ browser, users }) => {
+test("F06-H1: first cancellation-fee dispute is refunded on the spot", async ({ users }) => {
   const [trip] = await sql`select t.id from trips t join users u on u.id = t.rider_id
     where u.phone = '+15550000100' and t.cancel_fee_cents > 0 order by t.requested_at desc limit 1`;
   test.skip(!trip, "needs the cancellation-fee trip from f05");
@@ -37,22 +37,31 @@ test("F06-H1: rider reports a fee, admin refunds it, rider sees the answer", asy
   await rider.page.getByLabel("I shouldn't have paid a cancellation fee").check();
   await rider.page.getByLabel("Tell us what happened").fill("The driver was going the wrong way so I cancelled.");
   await rider.page.getByRole("button", { name: "Send" }).click();
-  await expect(rider.page.getByText("We've got your request")).toBeVisible();
+  await expect(rider.page.getByText("We've refunded $5.00")).toBeVisible();
   await axe(rider.page);
+  const [r] = await sql`select amount_cents from charges where trip_id = ${trip.id} and kind = 'refund'`;
+  expect(r.amount_cents).toBe(-500);
+  rider.check();
+});
+
+test("F06-H2: other requests go to a person, who replies in the console", async ({ users }) => {
+  const rider = await users();
+  await signIn(rider.page, "+15550000100", "/ride/help");
+  await rider.page.getByLabel("I left something in the car").check();
+  await rider.page.getByLabel("Tell us what happened").fill("I left a blue umbrella on the back seat.");
+  await rider.page.getByRole("button", { name: "Send" }).click();
+  await expect(rider.page.getByText("a person will reply")).toBeVisible();
 
   const admin = await users();
   await signIn(admin.page, "+15550000001", "/admin");
   await admin.page.getByRole("tab", { name: /Support/ }).click();
   await admin.page.getByRole("button", { name: "Resolve" }).first().click();
-  await admin.page.getByLabel("Reply to the rider").fill("Sorry about that. We've refunded the fee.");
-  await admin.page.getByLabel("Refund in dollars (optional)").fill("5");
+  await admin.page.getByLabel("Reply to the rider").fill("Found it. Your driver will drop it off tomorrow.");
   await admin.page.getByRole("button", { name: "Send" }).click();
   await expect(admin.page.getByText("No open requests.")).toBeVisible();
 
   await rider.page.reload();
-  await expect(rider.page.getByText(/Refunded \$5\.00/)).toBeVisible();
-  const [r] = await sql`select amount_cents from charges where trip_id = ${trip.id} and kind = 'refund'`;
-  expect(r.amount_cents).toBe(-500);
+  await expect(rider.page.getByText("Found it. Your driver will drop it off tomorrow.")).toBeVisible();
   rider.check();
   admin.check();
 });

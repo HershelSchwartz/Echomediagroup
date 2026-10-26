@@ -7,7 +7,7 @@ import { Banner } from "@/components/ui/Banner";
 type Data = {
   currency: string; totalCents: number;
   days: { date: string; cents: number; trips: number }[];
-  trips: { id: string; completedAt: string; from: string; to: string; product: string; earningsCents: number; tipCents: number }[];
+  trips: { id: string; completedAt: string; from: string; to: string; product: string; earningsCents: number; tipCents: number; riderFareCents: number; platformCents: number }[];
   payouts: { period_start: string; period_end: string; amount_cents: number; status: string }[];
 };
 
@@ -22,7 +22,7 @@ export function Earnings() {
   return (
     <div className="space-y-6">
       <section>
-        <p className="text-sm text-text-muted">Last 7 days</p>
+        <p className="text-sm text-text-muted">Last 7 days · you keep 80% of every fare and 100% of tips and wait time</p>
         <p className="text-3xl font-bold">{fmtMoney(d.totalCents, d.currency)}</p>
       </section>
       <section aria-label="Earnings by day">
@@ -45,6 +45,7 @@ export function Earnings() {
               <span className="min-w-0">
                 <span className="block truncate">{t.to}</span>
                 <span className="block text-text-muted">{new Date(t.completedAt).toLocaleString([], { dateStyle: "short", timeStyle: "short" })} · {t.product}{t.tipCents ? ` · tip ${fmtMoney(t.tipCents, d.currency)}` : ""}</span>
+                <span className="block text-xs text-text-muted">Rider paid {fmtMoney(t.riderFareCents, d.currency)} · we kept {fmtMoney(t.platformCents, d.currency)}</span>
               </span>
               <span className="font-semibold">{fmtMoney(t.earningsCents, d.currency)}</span>
             </li>

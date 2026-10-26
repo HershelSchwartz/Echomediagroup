@@ -23,6 +23,8 @@ test("F02/F03/F04-H1: request, match, ride, pay, rate, tip", async ({ browser, u
   // The rider asked from their GPS position; the driver sees a real place name, not "Current location".
   await expect(driver.page.getByText("Union Square")).toBeVisible();
   await expect(driver.page.getByText("Current location")).toHaveCount(0);
+  // Open fare split: the driver sees what the rider pays and what we keep.
+  await expect(driver.page.getByTestId("fare-split")).toContainText(/Rider pays \$\d+\.\d\d · we keep \$\d+\.\d\d/);
   await axe(driver.page);
   await driver.page.getByRole("button", { name: "Accept" }).click();
   await expect(driver.page.getByRole("heading", { name: /Pick up Alex/ })).toBeVisible();

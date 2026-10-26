@@ -1,7 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { sql } from "./db";
 import { fail, isUnique } from "./http";
-import { inArea, type LatLng } from "./geo";
+import { inArea, haversine, type LatLng } from "./geo";
 import { route, estimateRoute, describePoint } from "./maps";
 import { fare, surge as surgeFor, waitFee, cancelFee, tipOptions, type PriceRule } from "./pricing";
 import { dispatchNext, advanceDispatch } from "./dispatch";
@@ -174,6 +174,9 @@ export async function tripView(t: Record<string, any>, viewer: User) {
         acceptedAt: t.accepted_at,
         arrivedAt: t.arrived_at,
         promisedAt: t.pickup_eta_at,
+        ...(driverPos && t.accept_distance_m != null
+          ? { acceptDistanceM: t.accept_distance_m, currentDistanceM: Math.round(haversine(driverPos, { lat: t.pickup_lat, lng: t.pickup_lng })) }
+          : {}),
       })
     : 0;
   const fareCents = t.final_fare_cents ?? t.quoted_fare_cents + (t.wait_fee_cents ?? 0);
@@ -245,6 +248,17 @@ export async function unratedTripFor(user: User) {
   return t ? tripView(await loadTripFor(user, t.id), user) : null;
 }
 
+/** How far the assigned driver was from the pickup at accept time, and now. */
+async function progress(t: Record<string, any>) {
+  if (!t.driver_id || t.accept_distance_m == null) return {};
+  const [d] = await sql`select last_lat, last_lng from driver_profiles where user_id = ${t.driver_id}`;
+  if (d?.last_lat == null) return {};
+  return {
+    acceptDistanceM: t.accept_distance_m as number,
+    currentDistanceM: Math.round(haversine({ lat: d.last_lat, lng: d.last_lng }, { lat: t.pickup_lat, lng: t.pickup_lng })),
+  };
+}
+
 async function transition(user: User, id: string, from: string[], set: Record<string, unknown>) {
   const t = await loadTripFor(user, id);
   if (t.driver_id !== user.id) throw fail(403, "Only the trip's driver can do this.", "forbidden");
@@ -310,7 +324,7 @@ export async function cancelTrip(user: User, id: string, opts: { reason?: string
   if (!["matching", "accepted", "arrived"].includes(t.status)) {
     throw fail(409, t.status === "in_progress" ? "The trip has started. Ask your driver to end it." : "This trip is already over.", "bad_state");
   }
-  const input = { now, acceptedAt: t.accepted_at, arrivedAt: t.arrived_at, promisedAt: t.pickup_eta_at };
+  const input = { now, acceptedAt: t.accepted_at, arrivedAt: t.arrived_at, promisedAt: t.pickup_eta_at, ...(await progress(t)) };
 
   if (isDriver) {
     if (opts.noShow) {

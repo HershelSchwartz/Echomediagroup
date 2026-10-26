@@ -8,7 +8,9 @@ import { brand } from "@/lib/brand";
 export const POST = route(async (req, ctx: Ctx<{ id: string }>) => {
   await requireAdmin();
   const { id } = await ctx.params;
-  const i = await body(req, z.object({ status: z.enum(["approved", "rejected", "suspended"]), note: z.string().max(300).optional() }));
+  const i = await body(req, z.object({ status: z.enum(["approved", "rejected", "suspended"]), note: z.string().trim().max(300).optional() }));
+  // Drivers always get a reason they can read and appeal.
+  if (i.status !== "approved" && (i.note ?? "").length < 10) throw fail(400, "Write the reason the driver will see (at least 10 characters).", "reason_required");
   const [d] = await sql`update driver_profiles set status = ${i.status}, review_note = ${i.note ?? null},
       online = case when ${i.status} = 'approved' then online else false end, updated_at = now()
     where user_id = ${id} returning user_id`;

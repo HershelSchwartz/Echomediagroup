@@ -50,7 +50,13 @@ export type CancelInput = {
   acceptedAt: Date | null;
   arrivedAt: Date | null;
   promisedAt: Date | null;
+  /** metres from the pickup when the driver accepted, and now (rider cancels only) */
+  acceptDistanceM?: number | null;
+  currentDistanceM?: number | null;
 };
+
+/** The driver must have closed at least this much distance toward the pickup for a fee to apply. */
+export const MIN_PROGRESS_M = 150;
 
 /**
  * Cancellation fee charged to the rider, in cents.
@@ -65,6 +71,9 @@ export function cancelFee(rule: PriceRule, c: CancelInput): number {
   }
   if (!c.acceptedAt) return 0;
   if (!c.arrivedAt && c.promisedAt && minutes(c.promisedAt, c.now) > 5) return 0;
+  // Never charge when the driver wasn't actually coming: no progress toward the pickup.
+  if (!c.arrivedAt && c.acceptDistanceM != null && c.currentDistanceM != null
+      && c.acceptDistanceM - c.currentDistanceM < Math.min(MIN_PROGRESS_M, c.acceptDistanceM * 0.5)) return 0;
   return minutes(c.acceptedAt, c.now) > rule.cancel_free_min ? rule.cancel_fee_cents : 0;
 }
 

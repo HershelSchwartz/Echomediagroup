@@ -43,6 +43,7 @@ export default async function TripDetail({ params }: { params: Promise<{ id: str
           <div className="flex justify-between"><dt>Trip fare</dt><dd>{money(t.quotedFareCents, t.currency)}</dd></div>
           {t.waitFeeCents > 0 && <div className="flex justify-between"><dt>Wait time</dt><dd>{money(t.waitFeeCents, t.currency)}</dd></div>}
           {t.tipCents > 0 && <div className="flex justify-between"><dt>Tip</dt><dd>{money(t.tipCents, t.currency)}</dd></div>}
+          <div className="flex justify-between text-success"><dt>Price lock</dt><dd>{t.waitFeeCents ? "Upfront price + wait time" : "Matched your upfront price"}</dd></div>
         </dl>
       )}
       <ul className="mt-2 space-y-1 text-sm">

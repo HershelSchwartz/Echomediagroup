@@ -151,6 +151,9 @@ export function ChooseSheet({ draft, pickingPickup, onPickPickup, onQuote, onBac
       <Button block size="lg" className="mt-2" loading={busy} disabled={!opt || !pm || pickingPickup} onClick={request}>
         {opt ? `Request ${opt.name}` : "Request"}
       </Button>
+      <p className="mt-2 text-center text-xs text-text-muted">
+        Price lock: you pay the price above. It only changes if you change the destination or keep your driver waiting past the free minutes.
+      </p>
     </Sheet>
   );
 }

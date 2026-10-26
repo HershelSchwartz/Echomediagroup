@@ -21,6 +21,7 @@ import { useGeolocation } from "@/components/shared/useGeolocation";
 type Offer = {
   id: string; expiresAt: string; productName: string; pickup: Place; dropoff: Place; stops: number;
   toPickupS: number | null; toPickupM: number | null; tripS: number; tripM: number; earningsCents: number; currency: string;
+  riderFareCents: number; platformCents: number;
 };
 type State = {
   profile: { status: string; online: boolean; position: { lat: number; lng: number } | null; destination: { lat: number; lng: number; label: string } | null };
@@ -231,7 +232,8 @@ function OfferSheet({ offer, busy, error, onAccept, onDecline }: { offer: Offer;
         <div>
           <p className="text-sm font-semibold">{offer.productName} request</p>
           <p className="text-3xl font-bold">{fmtMoney(offer.earningsCents, offer.currency)}</p>
-          <p className="text-sm text-text-muted">your earnings, before tips</p>
+          <p className="text-sm text-text-muted">you earn, before tips</p>
+          <p className="text-xs text-text-muted" data-testid="fare-split">Rider pays {fmtMoney(offer.riderFareCents, offer.currency)} · we keep {fmtMoney(offer.platformCents, offer.currency)}</p>
         </div>
         <div className={`grid h-14 w-14 place-items-center rounded-pill border-4 text-lg font-bold ${left <= 5 ? "border-warning text-warning" : "border-accent"}`}>
           {left}<span className="sr-only"> seconds left</span>

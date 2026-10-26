@@ -43,6 +43,14 @@ test("cancel: rider pays after the window", () => {
 test("cancel: waived when the driver is over 5 minutes late", () => {
   assert.equal(cancelFee(rule, { by: "rider", now: t(12), acceptedAt: t(0), arrivedAt: null, promisedAt: t(6) }), 0);
 });
+test("cancel: waived when the driver made no progress toward the pickup", () => {
+  const base = { by: "rider" as const, now: t(3), acceptedAt: t(0), arrivedAt: null, promisedAt: t(6) };
+  assert.equal(cancelFee(rule, { ...base, acceptDistanceM: 1200, currentDistanceM: 1180 }), 0);
+  assert.equal(cancelFee(rule, { ...base, acceptDistanceM: 1200, currentDistanceM: 1300 }), 0);
+  assert.equal(cancelFee(rule, { ...base, acceptDistanceM: 1200, currentDistanceM: 600 }), 500);
+  // A driver who accepted from very close needs only half the distance as progress.
+  assert.equal(cancelFee(rule, { ...base, acceptDistanceM: 100, currentDistanceM: 40 }), 500);
+});
 test("cancel: driver no-show only after waiting", () => {
   assert.equal(cancelFee(rule, { by: "driver", now: t(4), acceptedAt: t(0), arrivedAt: t(1), promisedAt: null }), 0);
   assert.equal(cancelFee(rule, { by: "driver", now: t(6), acceptedAt: t(0), arrivedAt: t(1), promisedAt: null }), 500);

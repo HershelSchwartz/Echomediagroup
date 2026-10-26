@@ -14,6 +14,8 @@ export const GET = route(async () => {
   const rows = trips.map((t) => ({
     id: t.id, completedAt: t.completed_at, from: t.pickup_address, to: t.dropoff_address, product: t.product_name,
     earningsCents: driverEarnings(t.final_fare_cents, t.wait_fee_cents, t.tip_cents, t.booking_fee_cents), tipCents: t.tip_cents,
+    riderFareCents: t.final_fare_cents,
+    platformCents: t.final_fare_cents + t.tip_cents - driverEarnings(t.final_fare_cents, t.wait_fee_cents, t.tip_cents, t.booking_fee_cents),
   }));
   const byDay = new Map<string, { cents: number; trips: number }>();
   for (let i = 6; i >= 0; i--) {

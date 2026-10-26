@@ -48,6 +48,8 @@ export const GET = route(async () => {
           tripS: offer.est_duration_s,
           tripM: offer.est_distance_m,
           earningsCents: driverEarnings(offer.quoted_fare_cents, 0, 0, offer.booking_fee_cents),
+          riderFareCents: offer.quoted_fare_cents,
+          platformCents: offer.quoted_fare_cents - driverEarnings(offer.quoted_fare_cents, 0, 0, offer.booking_fee_cents),
           currency: offer.currency,
         }
       : null,

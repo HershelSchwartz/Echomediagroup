@@ -111,7 +111,8 @@ export async function acceptOffer(driverId: string, offerId: string) {
         { lat: trip0.pickup_lat, lng: trip0.pickup_lng },
       ]).durationS;
       const [v] = await tx`select id from vehicles where driver_id = ${driverId} and active order by created_at limit 1`;
-      const [trip] = await tx`update trips set driver_id = ${driverId}, vehicle_id = ${v?.id ?? null}, status = 'accepted',
+      const acceptDistance = Math.round(haversine({ lat: driver.last_lat, lng: driver.last_lng }, { lat: trip0.pickup_lat, lng: trip0.pickup_lng }));
+      const [trip] = await tx`update trips set driver_id = ${driverId}, vehicle_id = ${v?.id ?? null}, status = 'accepted', accept_distance_m = ${acceptDistance},
           accepted_at = now(), pickup_eta_at = now() + ${Math.max(60, eta) + " seconds"}::interval, updated_at = now()
         where id = ${offer.trip_id} and status = 'matching' returning *`;
       if (!trip) {
