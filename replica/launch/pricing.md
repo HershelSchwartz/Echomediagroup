@@ -16,8 +16,8 @@ ride-app prices before launch):
 
 | ride | base | per km | per min | minimum | booking fee | 5 km / 15 min example |
 | --- | --- | --- | --- | --- | --- | --- |
-| Standard | $2.50 | $1.10 | $0.32 | $9.00 | $2.50 | $15.80 |
-| XL | $4.00 | $1.75 | $0.45 | $14.00 | $2.50 | $22.25 |
+| Standard | $2.50 | $1.10 | $0.32 | $9.00 | $2.50 | $15.30 |
+| XL | $4.00 | $1.75 | $0.45 | $14.00 | $2.50 | $22.00 |
 | Premium | $8.00 | $2.60 | $0.60 | $25.00 | $0.00 | $30.00 |
 
 Billing complaints fixed in the product: price lock, no-fault fee waivers, instant first-dispute refund,
