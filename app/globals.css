@@ -1,0 +1,24 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+  body { background: var(--color-bg); color: var(--color-text); font-family: var(--font-sans); }
+  :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  button, [role="button"] { cursor: pointer; }
+  button:disabled { cursor: not-allowed; }
+}
+
+.sr-only-focusable:not(:focus) {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+@keyframes pulse-ring { 0% { transform: scale(.6); opacity: .7 } 100% { transform: scale(1.8); opacity: 0 } }
+.pulse-ring { animation: pulse-ring 1.6s var(--ease-app) infinite; transform-origin: center; transform-box: fill-box; }
+@keyframes skeleton { 50% { opacity: .5 } }
+.skeleton { animation: skeleton 1.4s ease-in-out infinite; }
+@keyframes spin { to { transform: rotate(360deg) } }
+.spin { animation: spin .8s linear infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .pulse-ring, .skeleton, .spin { animation: none; }
+}

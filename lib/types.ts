@@ -1,0 +1,37 @@
+// Shapes returned by the API (see lib/trips.ts tripView and app/api/*).
+export type Place = { lat: number; lng: number; address: string; name?: string };
+export type Trip = {
+  id: string;
+  status: "matching" | "accepted" | "arrived" | "in_progress" | "completed" | "cancelled_by_rider" | "cancelled_by_driver" | "no_drivers";
+  role: "rider" | "driver" | "admin";
+  product: { name: string; code: string };
+  pickup: Place;
+  dropoff: Place;
+  stops: { seq: number; lat: number; lng: number; address: string; reached_at: string | null }[];
+  guest: { name: string } | null;
+  currency: string;
+  quotedFareCents: number;
+  waitFeeCents: number;
+  fareCents: number;
+  tipCents: number;
+  cancelFeeCents: number;
+  cancelFeeIfNow: number;
+  surge: number;
+  estDistanceM: number;
+  estDurationS: number;
+  etaS: number | null;
+  waitingS: number | null;
+  waitGraceMin: number;
+  noShowMin: number;
+  times: Record<"requested" | "accepted" | "arrived" | "started" | "completed" | "cancelled" | "pickupEta", string | null>;
+  cancelReason: string | null;
+  driver: { firstName: string; rating: number | null; car: { make: string; model: string; colour: string; plate: string } | null; position: { lat: number; lng: number; heading: number | null } | null } | null;
+  rider: { firstName: string; rating: number | null };
+  myRating: number | null;
+  tipOptions: number[];
+  unread: number;
+  charges: { kind: string; amountCents: number; status: string; failure: string | null; at: string }[];
+};
+export type QuoteOption = { productId: string; code: string; name: string; description: string; seats: number; fareCents: number; pickupEtaS: number | null };
+export type Quote = { city: { id: string; name: string; currency: string }; route: { distanceM: number; durationS: number; geometry: { lat: number; lng: number }[] }; surge: number; options: QuoteOption[] };
+export type PaymentMethod = { id: string; kind: "card" | "cash"; provider: string; brand: string | null; last4: string | null; exp_month: number | null; exp_year: number | null; is_default: boolean };
