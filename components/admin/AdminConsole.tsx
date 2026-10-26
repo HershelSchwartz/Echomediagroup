@@ -64,7 +64,7 @@ const td = "border-t border-border px-2 py-2 align-top text-sm";
 function LiveTrips({ d }: { d: Overview }) {
   if (!d.live.length) return <p className="text-text-muted">No trips in progress.</p>;
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Table">
       <table className="w-full">
         <thead><tr><th className={th}>Status</th><th className={th}>Rider</th><th className={th}>Driver</th><th className={th}>Route</th><th className={th}>Fare</th><th className={th}>Requested</th></tr></thead>
         <tbody>
@@ -94,7 +94,7 @@ function Drivers({ d, onChange }: { d: Overview; onChange: () => void }) {
     finally { setBusy(null); }
   }
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Table">
       {error && <Banner variant="danger" className="mb-2">{error}</Banner>}
       <table className="w-full">
         <thead><tr><th className={th}>Driver</th><th className={th}>Status</th><th className={th}>Vehicle</th><th className={th}>Licence</th><th className={th}>Documents</th><th className={th}>Actions</th></tr></thead>

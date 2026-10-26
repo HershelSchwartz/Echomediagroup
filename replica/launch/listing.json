@@ -1,0 +1,16 @@
+{
+  "avoid": ["Uber", "Uber Technologies", "UberX", "Uber One"],
+  "app_store": {
+    "name": "Plainfare: Rides, Price Locked",
+    "subtitle": "Locked fares, open driver pay",
+    "promotional_text": "The price you see before you book is the price you pay. Drivers see what we keep on every trip.",
+    "description": "Plainfare is a local ride service with nothing hidden on either side.\n\nFor riders:\n- Price lock: the fare you see before you request is your charge. It only changes if you change the destination or keep your driver waiting past the free minutes.\n- No fee when it isn't your fault: if your driver cancels, is late, or never heads your way, there's no cancellation fee.\n- Share your live trip with anyone, without sharing your name or number.\n- Ride for someone else; we text them the driver's details.\n- Card or cash.\n\nFor drivers:\n- Every offer shows what the rider pays and what we keep.\n- Keep 80% of each fare after the booking fee, plus all tips and wait time.\n- No pause without a written reason, and a one-tap request for a human review.\n\nNow in New York City.",
+    "keywords": "taxi,cab,car service,rideshare,airport,fare,commute,local,ride share,pickup,trip",
+    "whats_new": "First release: price lock, open fare split for drivers, live trip sharing."
+  },
+  "google_play": {
+    "title": "Plainfare: Rides, Price Locked",
+    "short_description": "Locked fares for riders. Drivers see what we keep on every trip.",
+    "full_description": "Plainfare is a local ride service with nothing hidden on either side.\n\nFor riders: the fare you see before you request is your charge. It only changes if you change the destination or keep your driver waiting past the free minutes. No cancellation fee if your driver cancels, is late, or never heads your way. Share your live trip with anyone. Ride for someone else. Card or cash.\n\nFor drivers: every offer shows what the rider pays and what we keep. Keep 80% of each fare after the booking fee, plus all tips and wait time. No pause without a written reason, and a one-tap request for a human review.\n\nNow in New York City."
+  }
+}
