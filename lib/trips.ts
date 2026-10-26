@@ -2,7 +2,7 @@ import { randomBytes } from "node:crypto";
 import { sql } from "./db";
 import { fail, isUnique } from "./http";
 import { inArea, type LatLng } from "./geo";
-import { route, estimateRoute } from "./maps";
+import { route, estimateRoute, describePoint } from "./maps";
 import { fare, surge as surgeFor, waitFee, cancelFee, tipOptions, type PriceRule } from "./pricing";
 import { dispatchNext, advanceDispatch } from "./dispatch";
 import { charge } from "./payments";
@@ -84,6 +84,10 @@ export async function requestTrip(
   input: { productId: string; pickup: Place; dropoff: Place; stops: Place[]; quotedFareCents: number; paymentMethodId?: string; guest?: { name: string; phone: string } },
 ) {
   const q = await quote(input.pickup, input.dropoff, input.stops);
+  // GPS and dropped-pin pickups get a real label before a driver ever sees them.
+  const RAW = /^(Current location|Pinned spot)/;
+  if (RAW.test(input.pickup.address)) input.pickup = { ...input.pickup, address: await describePoint(input.pickup, q.city.id) };
+  if (RAW.test(input.dropoff.address)) input.dropoff = { ...input.dropoff, address: await describePoint(input.dropoff, q.city.id) };
   const opt = q.options.find((o) => o.productId === input.productId);
   if (!opt) throw fail(400, "That ride option isn't available.", "invalid");
   // The price the rider agreed to holds unless it went up by more than 5%.

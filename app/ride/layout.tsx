@@ -1,9 +1,6 @@
-import { redirect } from "next/navigation";
-import { getUser } from "@/lib/auth";
+import { userOrLogin } from "@/lib/guard";
 
 export default async function RideLayout({ children }: { children: React.ReactNode }) {
-  const user = await getUser();
-  if (!user) redirect("/login?next=/ride");
-  if (!user.name) redirect("/login?next=/ride");
+  await userOrLogin("/ride");
   return <>{children}</>;
 }

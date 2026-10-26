@@ -101,11 +101,11 @@ export function TripSheet({ trip, onChange }: { trip: Trip; onChange: () => void
       </div>
 
       <dl className="mt-3 space-y-1 text-sm">
-        <div className="flex gap-2"><dt className="sr-only">Pickup</dt><span aria-hidden className="mt-1.5 h-2 w-2 shrink-0 rounded-pill bg-pickup" /><dd className="truncate">{trip.pickup.address}</dd></div>
-        {trip.stops.map((s) => <div key={s.seq} className="flex gap-2"><dt className="sr-only">Stop {s.seq}</dt><span aria-hidden className="mt-1.5 h-2 w-2 shrink-0 rounded-pill border border-dropoff" /><dd className="truncate">{s.address}</dd></div>)}
-        <div className="flex items-center gap-2"><dt className="sr-only">Drop-off</dt><span aria-hidden className="h-2 w-2 shrink-0 bg-dropoff" /><dd className="min-w-0 flex-1 truncate">{trip.dropoff.address}</dd>
+        <div><dt className="sr-only">Pickup</dt><dd className="flex items-center gap-2"><span aria-hidden className="h-2 w-2 shrink-0 rounded-pill bg-pickup" /><span className="truncate">{trip.pickup.address}</span></dd></div>
+        {trip.stops.map((s) => <div key={s.seq}><dt className="sr-only">Stop {s.seq}</dt><dd className="flex items-center gap-2"><span aria-hidden className="h-2 w-2 shrink-0 rounded-pill border border-dropoff" /><span className="truncate">{s.address}</span></dd></div>)}
+        <div><dt className="sr-only">Drop-off</dt><dd className="flex items-center gap-2"><span aria-hidden className="h-2 w-2 shrink-0 bg-dropoff" /><span className="min-w-0 flex-1 truncate">{trip.dropoff.address}</span>
           {live && <Button variant="ghost" size="sm" onClick={() => setDestOpen(true)}><Pencil className="h-4 w-4" aria-hidden />Change</Button>}
-        </div>
+        </dd></div>
         <div className="flex justify-between pt-1"><dt className="text-text-muted">{trip.product.name}{trip.waitFeeCents > 0 ? " · incl. wait time" : ""}</dt><dd className="font-semibold">{fmtMoney(trip.fareCents, trip.currency)}</dd></div>
       </dl>
 

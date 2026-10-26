@@ -43,6 +43,34 @@ export async function route(points: LatLng[]): Promise<Route> {
   }
 }
 
+/**
+ * A readable label for a raw point (the rider's GPS position or a dropped pin), so the
+ * driver never sees "Current location". Mapbox reverse geocoding when set, else the
+ * nearest seeded place within 400 m, else rounded coordinates.
+ */
+export async function describePoint(p: LatLng, cityId: string): Promise<string> {
+  if (token()) {
+    try {
+      const url = `https://api.mapbox.com/search/geocode/v6/reverse?longitude=${p.lng}&latitude=${p.lat}&limit=1&access_token=${token()}`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(3000) });
+      if (res.ok) {
+        const f = (await res.json()).features?.[0];
+        if (f) return f.properties.full_address ?? f.properties.name;
+      }
+    } catch (e) {
+      console.warn("reverse: falling back", e);
+    }
+  }
+  const rows = await sql`select name, lat, lng from places where city_id = ${cityId}`;
+  let best: { name: string; d: number } | null = null;
+  for (const r of rows) {
+    const d = haversine(p, { lat: r.lat, lng: r.lng });
+    if (d <= 400 && (!best || d < best.d)) best = { name: r.name, d };
+  }
+  if (best) return best.d < 60 ? best.name : `Near ${best.name}`;
+  return `${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}`;
+}
+
 /** Address search: Mapbox Geocoding near the city, else the seeded places list. */
 export async function searchPlaces(q: string, cityId: string, near: LatLng | null): Promise<PlaceHit[]> {
   const coord = q.trim().match(/^(-?\d{1,2}\.\d+)\s*,\s*(-?\d{1,3}\.\d+)$/);

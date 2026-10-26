@@ -60,7 +60,7 @@ const drivers = [
 
 try {
   await sql.begin(async (tx) => {
-    await tx`truncate cities, users, outbox, webhook_events restart identity cascade`;
+    await tx`truncate cities, users, otp_codes, outbox, webhook_events restart identity cascade`;
     const [c] = await tx`insert into cities ${tx(city)} returning id`;
     for (const p of products) await tx`insert into products ${tx({ ...p, city_id: c.id })}`;
     for (const [name, address, lat, lng] of places) await tx`insert into places ${tx({ city_id: c.id, name, address, lat, lng })}`;

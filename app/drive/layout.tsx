@@ -1,8 +1,6 @@
-import { redirect } from "next/navigation";
-import { getUser } from "@/lib/auth";
+import { userOrLogin } from "@/lib/guard";
 
 export default async function DriveLayout({ children }: { children: React.ReactNode }) {
-  const user = await getUser();
-  if (!user) redirect("/login?next=/drive");
+  await userOrLogin("/drive");
   return <>{children}</>;
 }

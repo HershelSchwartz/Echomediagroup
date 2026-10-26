@@ -237,8 +237,8 @@ function OfferSheet({ offer, busy, error, onAccept, onDecline }: { offer: Offer;
         </div>
       </div>
       <dl className="my-3 space-y-2 text-sm">
-        <div className="flex gap-2"><span aria-hidden className="mt-1.5 h-2 w-2 shrink-0 rounded-pill bg-pickup" /><div><dt className="font-semibold">{fmtMin(offer.toPickupS)} ({offer.toPickupM != null ? fmtKm(offer.toPickupM) : ""}) away</dt><dd className="text-text-muted">{offer.pickup.address}</dd></div></div>
-        <div className="flex gap-2"><span aria-hidden className="mt-1.5 h-2 w-2 shrink-0 bg-dropoff" /><div><dt className="font-semibold">{fmtMin(offer.tripS)} ({fmtKm(offer.tripM)}) trip{offer.stops ? ` · ${offer.stops} stop${offer.stops > 1 ? "s" : ""}` : ""}</dt><dd className="text-text-muted">{offer.dropoff.address}</dd></div></div>
+        <div className="border-l-4 border-pickup pl-2"><dt className="font-semibold">{fmtMin(offer.toPickupS)} ({offer.toPickupM != null ? fmtKm(offer.toPickupM) : ""}) away</dt><dd className="text-text-muted">{offer.pickup.address}</dd></div>
+        <div className="border-l-4 border-dropoff pl-2"><dt className="font-semibold">{fmtMin(offer.tripS)} ({fmtKm(offer.tripM)}) trip{offer.stops ? ` · ${offer.stops} stop${offer.stops > 1 ? "s" : ""}` : ""}</dt><dd className="text-text-muted">{offer.dropoff.address}</dd></div>
       </dl>
       {error && <Banner variant="danger" className="mb-2">{error}</Banner>}
       <div className="grid grid-cols-[1fr_2fr] gap-2">

@@ -32,9 +32,9 @@ export default async function TripDetail({ params }: { params: Promise<{ id: str
       </div>
       <p className="text-sm text-text-muted">{fmt(t.times.requested)} · {t.product.name}{t.driver ? ` with ${t.driver.firstName}` : ""}</p>
       <dl className="my-3 space-y-1">
-        <div className="flex gap-2"><dt className="sr-only">From</dt><span aria-hidden className="mt-2 h-2 w-2 shrink-0 rounded-pill bg-pickup" /><dd>{t.pickup.address}</dd></div>
-        {t.stops.map((s) => <div key={s.seq} className="flex gap-2"><dt className="sr-only">Stop</dt><span aria-hidden className="mt-2 h-2 w-2 shrink-0 rounded-pill border border-dropoff" /><dd>{s.address}</dd></div>)}
-        <div className="flex gap-2"><dt className="sr-only">To</dt><span aria-hidden className="mt-2 h-2 w-2 shrink-0 bg-dropoff" /><dd>{t.dropoff.address}</dd></div>
+        <div><dt className="sr-only">From</dt><dd className="flex items-center gap-2"><span aria-hidden className="h-2 w-2 shrink-0 rounded-pill bg-pickup" />{t.pickup.address}</dd></div>
+        {t.stops.map((s) => <div key={s.seq}><dt className="sr-only">Stop</dt><dd className="flex items-center gap-2"><span aria-hidden className="h-2 w-2 shrink-0 rounded-pill border border-dropoff" />{s.address}</dd></div>)}
+        <div><dt className="sr-only">To</dt><dd className="flex items-center gap-2"><span aria-hidden className="h-2 w-2 shrink-0 bg-dropoff" />{t.dropoff.address}</dd></div>
       </dl>
 
       <h2 className="mb-2 mt-6 font-semibold">Payment</h2>

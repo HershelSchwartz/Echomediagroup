@@ -17,7 +17,7 @@ export function MapView(props: Props) {
   return TOKEN ? <TileMap {...props} /> : <SchematicMap {...props} />;
 }
 
-function bounds(points: LatLng[], center: LatLng) {
+function bounds(points: LatLng[], center: LatLng, aspect: number) {
   const pts = points.length ? points : [center];
   let minLat = Math.min(...pts.map((p) => p.lat)), maxLat = Math.max(...pts.map((p) => p.lat));
   let minLng = Math.min(...pts.map((p) => p.lng)), maxLng = Math.max(...pts.map((p) => p.lng));
@@ -25,12 +25,26 @@ function bounds(points: LatLng[], center: LatLng) {
   if (maxLat - minLat < minSpan) { const c = (maxLat + minLat) / 2; minLat = c - minSpan / 2; maxLat = c + minSpan / 2; }
   if (maxLng - minLng < minSpan) { const c = (maxLng + minLng) / 2; minLng = c - minSpan / 2; maxLng = c + minSpan / 2; }
   const pLat = (maxLat - minLat) * 0.18, pLng = (maxLng - minLng) * 0.18;
-  return { minLat: minLat - pLat, maxLat: maxLat + pLat, minLng: minLng - pLng, maxLng: maxLng + pLng };
+  minLat -= pLat; maxLat += pLat; minLng -= pLng; maxLng += pLng;
+  // Grow the short side so the box matches the container's shape: nothing gets cropped.
+  const kx = Math.cos((((minLat + maxLat) / 2) * Math.PI) / 180);
+  const w = (maxLng - minLng) * kx, h = maxLat - minLat;
+  if (w / h < aspect) { const extra = (h * aspect - w) / kx / 2; minLng -= extra; maxLng += extra; }
+  else { const extra = (w / aspect - h) / 2; minLat -= extra; maxLat += extra; }
+  return { minLat, maxLat, minLng, maxLng };
 }
 
 function SchematicMap({ markers, route, center, onPick, label }: Props) {
   const ref = useRef<SVGSVGElement>(null);
-  const b = useMemo(() => bounds([...markers, ...(route ?? [])], center), [markers, route, center]);
+  const [aspect, setAspect] = useState(0.6);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([e]) => { const { width, height } = e.contentRect; if (width && height) setAspect(width / height); });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  const b = useMemo(() => bounds([...markers, ...(route ?? [])], center, aspect), [markers, route, center, aspect]);
   const kx = Math.cos((((b.minLat + b.maxLat) / 2) * Math.PI) / 180);
   const W = (b.maxLng - b.minLng) * kx * 100000;
   const H = (b.maxLat - b.minLat) * 100000;

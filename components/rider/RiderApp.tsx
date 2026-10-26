@@ -51,7 +51,7 @@ export function RiderApp({ userName, city }: { userName: string; city: City }) {
           if (t && t.status !== "completed" && t.status !== "cancelled_by_rider") setOutcome(t);
         }
         setTrip(null);
-        setToRate(r.toRate);
+        setToRate(r.toRate && !skipped().includes(r.toRate.id) ? r.toRate : null);
       }
     } catch {
       /* keep the last state on a blip; the next poll retries */
@@ -107,7 +107,7 @@ export function RiderApp({ userName, city }: { userName: string; city: City }) {
     setOutcome(null);
     setPhase("choose");
   }} />;
-  else if (toRate) sheet = <RateSheet trip={toRate} onDone={() => { setToRate(null); refresh(); }} />;
+  else if (toRate) sheet = <RateSheet trip={toRate} onDone={() => { skip(toRate.id); setToRate(null); refresh(); }} />;
   else if (phase === "home") sheet = <HomeSheet name={userName} geoStatus={geo.status} onSearch={() => setPhase("search")} onPlace={(p) => { setDraft((d) => ({ ...d, dropoff: p })); setPhase(draft.pickup ? "choose" : "search"); }} />;
   else if (phase === "search") sheet = <SearchSheet draft={draft} near={geo.pos} onChange={setDraft} onBack={startOver} onDone={() => setPhase("choose")} />;
   else sheet = (
@@ -151,6 +151,15 @@ export function RiderApp({ userName, city }: { userName: string; city: City }) {
       <NavMenu open={menu} onClose={() => setMenu(false)} name={userName} />
     </div>
   );
+}
+
+// Ratings the rider skipped on this device; the trip can still be rated and tipped from Activity.
+const SKIP_KEY = "rating-skipped";
+function skipped(): string[] {
+  try { return JSON.parse(localStorage.getItem(SKIP_KEY) ?? "[]"); } catch { return []; }
+}
+function skip(id: string) {
+  try { localStorage.setItem(SKIP_KEY, JSON.stringify([...skipped(), id].slice(-20))); } catch { /* storage unavailable: prompt may show again */ }
 }
 
 export function errorText(e: unknown) {
