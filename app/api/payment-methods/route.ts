@@ -3,6 +3,7 @@ import { sql } from "@/lib/db";
 import { route, body, fail, zUuid } from "@/lib/http";
 import { requireUser } from "@/lib/auth";
 import { setupCheckoutUrl, stripeMode } from "@/lib/payments";
+import { testTools } from "@/lib/mode";
 
 export const GET = route(async () => {
   const user = await requireUser();
@@ -16,7 +17,7 @@ export const GET = route(async () => {
 
 /**
  * add: 'card' starts Stripe Checkout (setup mode) and returns its URL. Without Stripe keys,
- * in development only, 'devCard' adds a test card ('4242' works, '0002' declines).
+ * in development or DEMO_MODE only, 'devCard' adds a test card ('4242' works, '0002' declines).
  * 'cash' adds cash. 'default' switches the default method.
  */
 export const POST = route(async (req) => {
@@ -30,7 +31,7 @@ export const POST = route(async (req) => {
   ]));
   if (i.action === "card") return { url: await setupCheckoutUrl(user) };
   if (i.action === "devCard" || i.action === "cash") {
-    if (i.action === "devCard" && (stripeMode() || process.env.NODE_ENV === "production")) throw fail(400, "Test cards are only for development.", "invalid");
+    if (i.action === "devCard" && (stripeMode() || !testTools())) throw fail(400, "Test cards are only for testing.", "invalid");
     await sql.begin(async (tx) => {
       const [{ n }] = await tx`select count(*)::int as n from payment_methods where user_id = ${user.id} and is_default`;
       if (i.action === "cash") {

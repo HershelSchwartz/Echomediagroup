@@ -8,6 +8,7 @@ import { AccountReview } from "@/components/driver/AccountReview";
 import { DriverApp } from "@/components/driver/DriverApp";
 import { PageShell } from "@/components/shared/PageShell";
 import { Banner } from "@/components/ui/Banner";
+import { testTools } from "@/lib/mode";
 
 export const metadata: Metadata = { title: "Drive" };
 export const dynamic = "force-dynamic";
@@ -28,5 +29,5 @@ export default async function DrivePage() {
       </PageShell>
     );
   }
-  return <DriverApp city={{ name: city.name, center: { lat: city.center_lat, lng: city.center_lng } }} simulate={process.env.NODE_ENV !== "production"} />;
+  return <DriverApp city={{ name: city.name, center: { lat: city.center_lat, lng: city.center_lng } }} simulate={testTools()} />;
 }

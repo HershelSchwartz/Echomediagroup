@@ -12,7 +12,8 @@
     "db:seed": "node scripts/seed.mjs",
     "db:reset": "node scripts/migrate.mjs --reset && node scripts/seed.mjs",
     "test:unit": "node --test --experimental-strip-types tests/unit/*.test.ts",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "vercel-build": "node scripts/migrate.mjs && node scripts/seed.mjs --if-empty && next build"
   },
   "dependencies": {
     "leaflet": "^1.9.4",

@@ -40,7 +40,7 @@ test("F05-E1: cancelling after the free window shows and charges the fee", async
 test("F05-E3: no fee when the driver never headed to the pickup", async ({ users }) => {
   const driver = await users();
   await signIn(driver.page, "+15550000202", "/drive");
-  await driver.page.getByLabel("Simulate driving (development only)").uncheck();
+  await driver.page.getByLabel("Simulate driving (test mode)").uncheck();
   await driver.page.context().setGeolocation({ latitude: 40.745, longitude: -73.988 });
   await goOnline(driver.page);
   const rider = await users();

@@ -72,6 +72,9 @@ export async function signIn(page: Page, phone: string, next = "/ride", name?: s
 }
 
 export async function axe(page: Page) {
+  // Let client-side refreshes settle (the title is briefly empty mid-refresh).
+  await expect(page).toHaveTitle(/\S/);
+  await page.waitForLoadState("networkidle").catch(() => {});
   const r = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa"]).analyze();
   const bad = r.violations.map((v) => `${v.id} (${v.impact}): ${v.nodes.map((n) => n.target.join(" ")).slice(0, 3).join(", ")}`);
   expect(bad, bad.join("\n")).toEqual([]);

@@ -59,6 +59,13 @@ const drivers = [
 ];
 
 try {
+  if (process.argv.includes("--if-empty")) {
+    const [{ n }] = await sql`select count(*)::int as n from cities`;
+    if (n > 0) {
+      console.log("seed: database already has data, skipped");
+      process.exit(0);
+    }
+  }
   await sql.begin(async (tx) => {
     await tx`truncate cities, users, otp_codes, outbox, webhook_events restart identity cascade`;
     const [c] = await tx`insert into cities ${tx(city)} returning id`;

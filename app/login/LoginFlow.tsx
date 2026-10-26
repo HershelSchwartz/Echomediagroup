@@ -114,7 +114,7 @@ export function LoginFlow() {
             <ArrowLeft className="h-5 w-5" aria-hidden />
           </button>
           <h1 className="text-xl font-bold">Enter the code we sent to {normalized}</h1>
-          {devCode && <Banner variant="warning">Development mode: no SMS provider is set up. Your code is <strong>{devCode}</strong>.</Banner>}
+          {devCode && <Banner variant="warning">Test mode: no text messages are sent. Your code is <strong>{devCode}</strong>.</Banner>}
           <Field
             ref={codeRef}
             label="6-digit code"

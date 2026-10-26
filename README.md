@@ -32,6 +32,10 @@ npx playwright test                 # 18 end-to-end flows, axe accessibility on 
 
 If Playwright can't find its browser, point it at an installed Chromium: `PW_CHROMIUM=/path/to/chrome npx playwright test`.
 
+## Test it on your phone
+
+See `TESTING-ON-YOUR-PHONE.md`: a free Neon + Vercel test link with `DEMO_MODE=1`, and an Android APK via PWABuilder.
+
 ## Deploy
 
 See `replica/deploy.md`. Short version: Vercel + Neon, env vars from `.env.example`, Stripe webhook at

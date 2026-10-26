@@ -195,7 +195,7 @@ export function DriverApp({ city, simulate }: { city: { name: string; center: { 
       {simulate && (
         <label className="mt-3 flex items-center gap-2 text-sm text-text-muted">
           <input type="checkbox" checked={sim} onChange={(e) => setSim(e.target.checked)} className="h-5 w-5 accent-[var(--color-accent)]" />
-          Simulate driving (development only)
+          Simulate driving (test mode)
         </label>
       )}
     </Sheet>

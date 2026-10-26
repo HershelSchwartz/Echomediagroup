@@ -4,6 +4,7 @@ import { sql } from "./db";
 import { fail } from "./http";
 import { sendSms, smsConfigured } from "./notify";
 import { brand } from "./brand";
+import { demoMode } from "./mode";
 
 export type User = {
   id: string;
@@ -33,7 +34,8 @@ export function normalizePhone(input: string): string | null {
 }
 
 export function devOtpAllowed() {
-  return process.env.NODE_ENV !== "production" && process.env.DEV_SHOW_OTP === "1" && !smsConfigured();
+  if (smsConfigured()) return false;
+  return demoMode() || (process.env.NODE_ENV !== "production" && process.env.DEV_SHOW_OTP === "1");
 }
 
 export async function startOtp(phone: string): Promise<{ devCode?: string }> {

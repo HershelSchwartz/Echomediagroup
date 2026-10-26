@@ -96,7 +96,7 @@ export function Wallet({ devCards }: { devCards: boolean }) {
         {stripe && <Button loading={busy === "card"} onClick={() => act("card", { action: "card" })}><CreditCard className="h-5 w-5" aria-hidden />Add a card</Button>}
         {!stripe && devCards && (
           <>
-            <Banner variant="warning">Development mode: card payments aren't connected, so you can add test cards.</Banner>
+            <Banner variant="warning">Test mode: card payments aren't connected, so you can add test cards. No real money moves.</Banner>
             <Button loading={busy === "dev4242"} onClick={() => act("dev4242", { action: "devCard", last4: "4242" })}>Add test card (works)</Button>
             <Button variant="secondary" loading={busy === "dev0002"} onClick={() => act("dev0002", { action: "devCard", last4: "0002" })}>Add test card (declines)</Button>
           </>
