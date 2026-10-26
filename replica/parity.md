@@ -45,6 +45,13 @@ Not shippable yet: 3 must-have features are not done.
 - Airport and partner agreements: partner deals
 - Operating licence insurance and background checks: get your own TNC/private-hire licence and use a licensed vendor
 
+## Yours, not in the original (not scored)
+- Price lock: the upfront price is the charge (only wait time or a rider's destination change can move it)
+- No cancellation fee when the driver never headed to the pickup
+- Open fare split: driver sees rider fare and platform cut on every offer and trip
+- Driver suspensions need a written reason and a one-tap human review
+- First cancellation-fee dispute refunded instantly
+
 ## Layout score
 
 Not measured. There are no reference screenshots of the original in `replica/screens/` (the App Store and
@@ -76,8 +83,9 @@ screens at 1080x2200 (or any phone size) as `replica/screens/S05.png`, `S07.png`
 2. Push notifications: arrive with the native apps (Expo push).
 3. Card charges through Stripe: the code is written; it needs your Stripe test keys and one end-to-end run.
 
-No open S1 or S2 bugs. Feature score 87.3. Once the three above are done, the verdict is shippable; with
-the replica-entrepreneur fixes it becomes "better than the original".
+No open S1 or S2 bugs. Feature score 87.3. Once the three above are done, the verdict is shippable. The five
+replica-entrepreneur fixes are already built (price lock, no-progress fee waiver, open fare split, fair driver
+reviews, instant first dispute refund), so at that point it is "better than the original".
 
 ## Top five to build next
 
